@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/modules/miscellaneous/miscellaneous.iml" filepath="$PROJECT_DIR$/modules/miscellaneous/miscellaneous.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/mvcsimple/mvcsimple.iml" filepath="$PROJECT_DIR$/modules/mvcsimple/mvcsimple.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/tictactoe/tictactoe.iml" filepath="$PROJECT_DIR$/modules/tictactoe/tictactoe.iml" />
+    </modules>
+  </component>
+</project>
