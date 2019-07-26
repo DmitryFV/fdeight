@@ -1,6 +1,7 @@
 package com.fdeight.mvcsimple.controller;
 
 import com.fdeight.mvcsimple.model.Model01;
+import com.fdeight.mvcsimple.model.controller.Controller;
 import com.fdeight.mvcsimple.view.View01;
 
 /**

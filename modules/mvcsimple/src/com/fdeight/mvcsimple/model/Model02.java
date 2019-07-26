@@ -1,6 +1,6 @@
 package com.fdeight.mvcsimple.model;
 
-import com.fdeight.mvcsimple.controller.ControllerM02;
+import com.fdeight.mvcsimple.model.controller.ControllerM02;
 
 public class Model02 {
 

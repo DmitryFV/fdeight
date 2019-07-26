@@ -1,6 +1,8 @@
 package com.fdeight.mvcsimple.controller;
 
 import com.fdeight.mvcsimple.model.Model02;
+import com.fdeight.mvcsimple.model.controller.Controller;
+import com.fdeight.mvcsimple.model.controller.ControllerM02;
 import com.fdeight.mvcsimple.view.View01;
 
 public class ControllerM02V01 implements Controller, ControllerM02, ControllerV01 {
