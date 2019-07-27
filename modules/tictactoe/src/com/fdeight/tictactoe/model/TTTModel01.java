@@ -16,7 +16,11 @@ public class TTTModel01 {
     private enum Item {
         EMPTY,
         CROSS,
-        ZERO
+        ZERO;
+
+        public String format() {
+            return String.valueOf(ordinal());
+        }
     }
 
     /**
@@ -105,7 +109,7 @@ public class TTTModel01 {
                 if (sb.length() > 0) {
                     sb.append(" ");
                 }
-                sb.append(field[i][j].ordinal());
+                sb.append(field[i][j].format());
             }
         }
         return sb.toString();

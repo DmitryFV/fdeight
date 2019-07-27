@@ -33,6 +33,10 @@ public class TTTModel02 {
             }
             throw new IllegalStateException(String.format("No other item for: %s", this));
         }
+
+        public String format() {
+            return String.valueOf(ordinal());
+        }
     }
 
     private class State {
@@ -388,7 +392,7 @@ public class TTTModel02 {
                 if (sb.length() > 0) {
                     sb.append(" ");
                 }
-                sb.append(state.field[i][j].ordinal());
+                sb.append(state.field[i][j].format());
             }
         }
         return sb.toString();
