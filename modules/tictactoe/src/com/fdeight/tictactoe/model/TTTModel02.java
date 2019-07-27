@@ -31,7 +31,7 @@ public class TTTModel02 {
             if (this == ZERO) {
                 return CROSS;
             }
-            throw new UnsupportedOperationException(String.format("No other item for: %s", this));
+            throw new IllegalStateException(String.format("No other item for: %s", this));
         }
     }
 
@@ -143,7 +143,7 @@ public class TTTModel02 {
                     controller.setAction(playerId, action);
                     break;
                 default:
-                    throw new UnsupportedOperationException("play(): unsupported playerType: " + playerTypes[playerId - 1]);
+                    throw new IllegalStateException("play(): unsupported playerType: " + playerTypes[playerId - 1]);
             }
             final int[] place = action.parseAction();
             if (!checkPlace(place)) {
@@ -246,7 +246,7 @@ public class TTTModel02 {
         } else if (placeEmpty != null) {
             placeResult = placeEmpty;
         } else {
-            throw new UnsupportedOperationException("processPlaces(): no empty items");
+            throw new IllegalArgumentException("processPlaces(): no empty items");
         }
         return new TTTInfo02(String.format("%d %d", placeResult[0] + 1, placeResult[1] + 1));
     }
@@ -371,7 +371,7 @@ public class TTTModel02 {
                 return new TTTInfo02(String.format("%d %d", row + 1, col + 1));
             }
         }
-        throw new UnsupportedOperationException("getActionRandom()");
+        throw new RuntimeException("getActionRandom(): empty item not found");
     }
 
     private int[] createPlaceIfNeedAndSet(final int[] place, final int row, final int col) {

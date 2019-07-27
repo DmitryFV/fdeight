@@ -206,7 +206,7 @@ public class MainWindow extends JFrame implements KeyListener, MouseListener {
                 paintPlay(g, enfOfGameInfo, enfOfGameSize, MAIN_COMMANDS);
                 break;
             default:
-                throw new UnsupportedOperationException(String.format("Unsupported mode: %s", mode));
+                throw new IllegalStateException(String.format("Unsupported mode: %s", mode));
         }
     }
 
@@ -261,7 +261,7 @@ public class MainWindow extends JFrame implements KeyListener, MouseListener {
                 processCommand(keyCode, EXIT_COMMAND);
                 break;
             default:
-                throw new UnsupportedOperationException(String.format("Unsupported mode: %s", mode));
+                throw new IllegalStateException(String.format("Unsupported mode: %s", mode));
         }
     }
 
@@ -320,7 +320,8 @@ public class MainWindow extends JFrame implements KeyListener, MouseListener {
 
     private int computeCellSize() {
         if (mode != Mode.PLAY) {
-            throw new UnsupportedOperationException(String.format("computeCellSize(): %s", mode));
+            throw new IllegalStateException(String.format("computeCellSize(), unsupported mode != %s: %s",
+                    Mode.PLAY, mode));
         }
         return MIN_CELL_SIZE;
     }
@@ -332,10 +333,10 @@ public class MainWindow extends JFrame implements KeyListener, MouseListener {
 
     private void drawField(final Graphics g, final TTTInfo info, final int size) {
         if (mode != Mode.PLAY && mode != Mode.END_OF_GAME) {
-            throw new UnsupportedOperationException(String.format("drawField(), mode: %s", mode));
+            throw new IllegalStateException(String.format("drawField(), unsupported mode: %s", mode));
         }
         if (info == null) {
-            throw new UnsupportedOperationException(String.format("drawField(), info: %s", info));
+            throw new IllegalArgumentException("drawField(), info is null");
         }
         g.drawRect(GAP - BORDER, topField + GAP - BORDER,
                 size * cellSize + 2 * BORDER, size * cellSize + 2 * BORDER);
@@ -366,7 +367,7 @@ public class MainWindow extends JFrame implements KeyListener, MouseListener {
                         cellSize - 2 * BORDER, cellSize - 2 * BORDER);
                 break;
             default:
-                throw new UnsupportedOperationException(String.format("Wrong state: %d, %s",
+                throw new IllegalArgumentException(String.format("Wrong cell: %d, %s",
                         cell, info.getState()));
         }
     }
@@ -408,9 +409,10 @@ public class MainWindow extends JFrame implements KeyListener, MouseListener {
         //repeatedTests(state);
     }
 
+    @SuppressWarnings("unused")
     private void repeatedTests(final String state) {
         if (state.startsWith("Cross")) {
-            throw new UnsupportedOperationException("Error");
+            throw new RuntimeException("Error");
         }
 
         try {

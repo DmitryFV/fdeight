@@ -26,8 +26,8 @@ public class TTTInfo02 implements TTTInfo {
     public int[] parseField(final int size) {
         final String[] strings = state.split(" ");
         if (strings.length != size * size) {
-            throw new UnsupportedOperationException(String.format("Wrong state: %d != %d, %s",
-                    strings.length, size * size, state));
+            throw new IllegalArgumentException(String.format("Wrong size (%d): %d (state length) != %d (size * size), %s",
+                    size, strings.length, size * size, state));
         }
         final int[] field = new int[size * size];
         for (int i = 0; i < strings.length; i++) {
@@ -40,7 +40,7 @@ public class TTTInfo02 implements TTTInfo {
     public int[] parseAction() {
         final String[] strings = state.split(" ");
         if (strings.length != 2) {
-            throw new UnsupportedOperationException(String.format("Wrong state: %d != 2, %s",
+            throw new IllegalStateException(String.format("Wrong state: %d (state length) != 2, %s",
                     strings.length, state));
         }
         final int[] place = new int[2];

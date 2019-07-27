@@ -79,8 +79,8 @@ public class TTTView01 {
                         ps.print("0");
                         break;
                     default:
-                        throw new UnsupportedOperationException(String.format("Wrong state: %d, %s",
-                                field[index], info.getState()));
+                        throw new IllegalStateException(String.format("Wrong field[%d]: %d, %s",
+                                index, field[index], info.getState()));
                 }
                 if (j == size - 1) {
                     ps.print("|");
