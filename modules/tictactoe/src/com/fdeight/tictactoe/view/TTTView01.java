@@ -10,6 +10,29 @@ import java.util.Scanner;
 
 public class TTTView01 {
 
+    /**
+     * Элемент поля.
+     */
+    private enum Item {
+        EMPTY(" "),
+        CROSS("X"),
+        ZERO("0");
+
+        private final String output;
+
+        Item(final String output) {
+            this.output = output;
+        }
+
+        public static Item convert(final int formatted) {
+            if (formatted < 0 || formatted > values().length - 1) {
+                throw new IllegalArgumentException(String.format("convert(): formatted (%d) not in [%d;%d]",
+                        formatted, 0, values().length - 1));
+            }
+            return values()[formatted];
+        }
+    }
+
     private enum Command {
         UNDEFINED,
         START_OF_GAME,
@@ -68,20 +91,8 @@ public class TTTView01 {
         for (int i = 0; i < size; i++) {
             ps.print("|");
             for (int j = 0; j < size; j++) {
-                switch (field[index]) {
-                    case 0:
-                        ps.print(" ");
-                        break;
-                    case 1:
-                        ps.print("X");
-                        break;
-                    case 2:
-                        ps.print("0");
-                        break;
-                    default:
-                        throw new IllegalStateException(String.format("Wrong field[%d]: %d, %s",
-                                index, field[index], info.getState()));
-                }
+                final Item item = Item.convert(field[index]);
+                ps.print(item.output);
                 if (j == size - 1) {
                     ps.print("|");
                 } else {

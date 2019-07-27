@@ -15,6 +15,23 @@ import java.util.function.Consumer;
 public class MainWindow extends JFrame implements KeyListener, MouseListener {
 
     /**
+     * Элемент поля.
+     */
+    private enum Item {
+        EMPTY,
+        CROSS,
+        ZERO;
+
+        public static Item convert(final int formatted) {
+            if (formatted < 0 || formatted > values().length - 1) {
+                throw new IllegalArgumentException(String.format("convert(): formatted (%d) not in [%d;%d]",
+                        formatted, 0, values().length - 1));
+            }
+            return values()[formatted];
+        }
+    }
+
+    /**
      * Режим.
      */
     private enum Mode {
@@ -353,22 +370,20 @@ public class MainWindow extends JFrame implements KeyListener, MouseListener {
 
     private void drawCell(final Graphics g, final int top, final int row, final int col, final int cell) {
         g.drawRect(GAP + col * cellSize, top + GAP + row * cellSize, cellSize, cellSize);
-        switch (cell) {
-            case 0:
+        final Item item = Item.convert(cell);
+        switch (item) {
+            case EMPTY:
                 break;
-            case 1:
+            case CROSS:
                 g.drawLine(GAP + col * cellSize + BORDER, top + GAP + row * cellSize + BORDER,
                         GAP + (col + 1) * cellSize - BORDER, top + GAP + (row + 1) * cellSize - BORDER);
                 g.drawLine(GAP + col * cellSize + BORDER, top + GAP + (row +1) * cellSize - BORDER,
                         GAP + (col + 1) * cellSize - BORDER, top + GAP + row * cellSize + BORDER);
                 break;
-            case 2:
+            case ZERO:
                 g.drawOval(GAP + col * cellSize + BORDER, top + GAP + row * cellSize + BORDER,
                         cellSize - 2 * BORDER, cellSize - 2 * BORDER);
                 break;
-            default:
-                throw new IllegalArgumentException(String.format("Wrong cell: %d, %s",
-                        cell, info.getState()));
         }
     }
 
