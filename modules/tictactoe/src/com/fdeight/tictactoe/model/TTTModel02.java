@@ -4,6 +4,8 @@ import com.fdeight.tictactoe.model.controller.TTTControllerM02;
 import com.fdeight.tictactoe.model.info.TTTInfo;
 import com.fdeight.tictactoe.model.info.TTTInfo02;
 
+import java.util.Arrays;
+
 public class TTTModel02 {
 
     private TTTControllerM02 controller;
@@ -48,9 +50,7 @@ public class TTTModel02 {
         private State() {
             field = new Item[size][size];
             for (final Item[] items : field) {
-                for (int j = 0; j < items.length; j++) {
-                    items[j] = Item.EMPTY;
-                }
+                Arrays.fill(items, Item.EMPTY);
             }
         }
 
