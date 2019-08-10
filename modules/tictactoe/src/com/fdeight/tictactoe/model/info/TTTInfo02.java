@@ -24,9 +24,14 @@ public class TTTInfo02 implements TTTInfo {
 
     @Override
     public int[] parseField(final int size) {
+        final String lState = state.trim();
+        if (lState.isEmpty()) {
+            throw new IllegalStateException("Trimmed state is empty");
+        }
         final String[] strings = state.split(" ");
         if (strings.length != size * size) {
-            throw new IllegalArgumentException(String.format("Wrong size (%d): %d (state length) != %d (size * size), %s",
+            throw new IllegalArgumentException(String.format(
+                    "Wrong size (%d): %d (state length) != %d (size * size), %s",
                     size, strings.length, size * size, state));
         }
         final int[] field = new int[size * size];
