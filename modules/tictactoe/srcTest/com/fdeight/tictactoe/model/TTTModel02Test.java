@@ -11,6 +11,7 @@ public class TTTModel02Test {
     public void getSize() {
         final TTTModel02 tttModel02 = new TTTModel02();
         Assert.assertEquals(0, tttModel02.getSize());
+
         tttModel02.setController(new TTTControllerM02() {
             @Override
             public void drawField(final TTTInfo state) {
@@ -22,7 +23,7 @@ public class TTTModel02Test {
             }
 
             @Override
-            public void setAction (final int playerId, final TTTInfo action) {
+            public void setAction(final int playerId, final TTTInfo action) {
             }
 
             @Override
