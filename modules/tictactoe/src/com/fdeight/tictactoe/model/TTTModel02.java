@@ -101,7 +101,7 @@ public class TTTModel02 {
         this.delay = delay;
     }
 
-    public String getVersion() {
+    public static String getVersion() {
         return "TTT 2.0";
     }
 
@@ -112,13 +112,26 @@ public class TTTModel02 {
     }
 
     public void startOfGame(final int size) {
+        if (!initGame(size)) {
+            return;
+        }
+        play();
+    }
+
+    /**
+     * Инициализировать игру.
+     *
+     * @param size размер поля.
+     * @return {@code true}, если игра инициализирована.
+     */
+    boolean initGame(final int size) {
         if (size < 1) {
             endOfGame(String.format("Wrong size (%d)", size));
-            return;
+            return false;
         }
         this.size = size;
         state = new State();
-        play();
+        return true;
     }
 
     //------------------------------------------------------------------------------------------------------------------
