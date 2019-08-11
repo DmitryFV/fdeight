@@ -24,7 +24,7 @@ public class IniFileSettingsAccess implements SettingsAccess {
 
     @Override
     public int getIntSetting(final String name, final int defaultValue) {
-        if(properties.containsKey(name)) {
+        if (properties.containsKey(name)) {
             return Integer.parseInt(properties.getProperty(name));
         } else {
             return defaultValue;
@@ -33,7 +33,7 @@ public class IniFileSettingsAccess implements SettingsAccess {
 
     @Override
     public String getStringSetting(final String name, final String defaultValue) {
-        if(properties.containsKey(name)) {
+        if (properties.containsKey(name)) {
             return properties.getProperty(name);
         } else {
             return defaultValue;
@@ -42,8 +42,9 @@ public class IniFileSettingsAccess implements SettingsAccess {
 
     /**
      * Находит файл с заданным именем для использования при записи настроек (создает, если его нет)
-     * @param settingsNameFile  путь к положению файла на диске
-     * @return {@code File} - файл по заданному пути
+     *
+     * @param settingsNameFile путь к положению файла на диске
+     * @return файл по заданному пути
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private File getOrCreateFile(final String settingsNameFile) {
