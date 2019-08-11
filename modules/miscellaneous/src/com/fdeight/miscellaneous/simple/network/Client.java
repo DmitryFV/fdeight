@@ -14,13 +14,14 @@ import java.util.Date;
 public class Client {
 
     private static final String IP;
-    private static final int PORT = Server.PORT;
+    private static final int PORT;
     private static final SimpleDateFormat DATE_FORMAT = Server.DATE_FORMAT;
 
     private final String ip; // ip адрес клиента
     private final int port; // порт соединения
 
     private static final String IP_DEFAULT = "localhost";
+    private static final int PORT_DEFAULT = Server.PORT_DEFAULT;
     private final static String SETTINGS_FILE_NAME = "config_client.properties";
 
     private Socket socket = null;
@@ -32,6 +33,7 @@ public class Client {
     static {
         final SettingsAccess access = new IniFileSettingsAccess(SETTINGS_FILE_NAME);
         IP = access.getStringSetting("IP", IP_DEFAULT);
+        PORT = access.getIntSetting("PORT", PORT_DEFAULT);
     }
 
     /**

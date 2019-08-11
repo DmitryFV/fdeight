@@ -15,11 +15,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class Server {
 
-    static final int PORT;
+    private static final int PORT;
     static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
     private static final int COUNT_EVENTS_IN_HISTORY;
 
-    private static final int PORT_DEFAULT = 8081;
+    static final int PORT_DEFAULT = 8081;
     private static final int COUNT_EVENTS_DEFAULT = 20;
     private final static String SETTINGS_FILE_NAME = "config_server.properties";
 
