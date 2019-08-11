@@ -24,21 +24,13 @@ public class IniFileSettingsAccess implements SettingsAccess {
         }
     }
 
-    //также записывает значение по умолчанию в файл, если не находит его изначально
     @Override
     public int getIntSetting(final String name, final int defaultValue) {
         if(properties.containsKey(name)) {
             return Integer.parseInt(properties.getProperty(name));
         } else {
-            try {
-                properties.setProperty(name, defaultValue + "");
-                properties.store(new FileOutputStream(file), null);
-                return defaultValue;
-            } catch (final Exception e) {
-                e.printStackTrace();
-            }
+            return defaultValue;
         }
-        return defaultValue;
     }
 
     @Override
@@ -46,15 +38,8 @@ public class IniFileSettingsAccess implements SettingsAccess {
         if(properties.containsKey(name)) {
             return properties.getProperty(name);
         } else {
-            try {
-                properties.setProperty(name, defaultValue);
-                properties.store(new FileOutputStream(file), null);
-                return defaultValue;
-            } catch (final Exception e) {
-                e.printStackTrace();
-            }
+            return defaultValue;
         }
-        return defaultValue;
     }
 
     /**
