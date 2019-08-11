@@ -21,7 +21,7 @@ public class Client {
     private final int port; // порт соединения
 
     private static final String IP_DEFAULT = "localhost";
-    private final static String SETTINGS_FILE_NAME = "config_client.preferences";
+    private final static String SETTINGS_FILE_NAME = "config_client.properties";
 
     private Socket socket = null;
     private BufferedReader in = null; // поток чтения из сокета

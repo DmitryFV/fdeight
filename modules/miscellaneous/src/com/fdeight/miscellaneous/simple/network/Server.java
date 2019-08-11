@@ -21,7 +21,7 @@ public class Server {
 
     private static final int PORT_DEFAULT = 8081;
     private static final int COUNT_EVENTS_DEFAULT = 20;
-    private final static String SETTINGS_FILE_NAME = "config_server.preferences";
+    private final static String SETTINGS_FILE_NAME = "config_server.properties";
 
     static {
         final SettingsAccess access = new IniFileSettingsAccess(SETTINGS_FILE_NAME);
