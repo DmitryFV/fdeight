@@ -1,5 +1,7 @@
 package com.fdeight.miscellaneous.simple.network;
 
+import com.fdeight.miscellaneous.simple.network.DataAccess.IniFileSettingsAccess;
+
 import java.net.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -11,18 +13,26 @@ import java.util.Date;
  */
 public class Client {
 
-    private static final String IP = "192.168.0.107";//"localhost";
+    private static final String IP;
     private static final int PORT = Server.PORT;
     private static final SimpleDateFormat DATE_FORMAT = Server.DATE_FORMAT;
 
     private final String ip; // ip адрес клиента
     private final int port; // порт соединения
 
+    private static final String IP_DEFAULT = "localhost";
+    private final static String SETTINGS_FILE_NAME = "config_client.preferences";
+
     private Socket socket = null;
     private BufferedReader in = null; // поток чтения из сокета
     private BufferedWriter out = null; // поток записи в сокет
     private BufferedReader inputUser = null; // поток чтения с консоли
     private String nickname = null; // имя клиента
+
+    static {
+        final SettingsAccess access = new IniFileSettingsAccess(SETTINGS_FILE_NAME);
+        IP = access.getStringSetting("IP", IP_DEFAULT);
+    }
 
     /**
      * для создания необходимо принять адрес и номер порта

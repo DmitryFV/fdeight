@@ -1,5 +1,7 @@
 package com.fdeight.miscellaneous.simple.network;
 
+import com.fdeight.miscellaneous.simple.network.DataAccess.IniFileSettingsAccess;
+
 import java.io.*;
 import java.net.*;
 import java.text.SimpleDateFormat;
@@ -13,9 +15,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class Server {
 
-    static final int PORT = 8081;
+    static final int PORT;
     static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
-    private static final int COUNT_EVENTS_IN_HISTORY = 20;
+    private static final int COUNT_EVENTS_IN_HISTORY;
+
+    private static final int PORT_DEFAULT = 8081;
+    private static final int COUNT_EVENTS_DEFAULT = 20;
+    private final static String SETTINGS_FILE_NAME = "config_server.preferences";
+
+    static {
+        final SettingsAccess access = new IniFileSettingsAccess(SETTINGS_FILE_NAME);
+        PORT = access.getIntSetting("PORT", PORT_DEFAULT);
+        COUNT_EVENTS_IN_HISTORY = access.getIntSetting("COUNT_EVENTS", COUNT_EVENTS_DEFAULT);
+    }
 
     enum Command {
         WARNING("warning"),
