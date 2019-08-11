@@ -1,22 +1,20 @@
-package com.fdeight.miscellaneous.simple.network.DataAccess;
+package com.fdeight.miscellaneous.simple.network.data_access;
 
 
 import com.fdeight.miscellaneous.simple.network.SettingsAccess;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
 public class IniFileSettingsAccess implements SettingsAccess {
 
-    private final File file;
     private final Properties properties;
 
     public IniFileSettingsAccess(final String settingsNameFile) {
         properties = new Properties();
-        file = getOrCreateFile(settingsNameFile);
+        final File file = getOrCreateFile(settingsNameFile);
         try {
             properties.load(new FileInputStream(file));
         } catch (final Exception e) {
@@ -47,6 +45,7 @@ public class IniFileSettingsAccess implements SettingsAccess {
      * @param settingsNameFile  путь к положению файла на диске
      * @return {@code File} - файл по заданному пути
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private File getOrCreateFile(final String settingsNameFile) {
         final File file = new File(settingsNameFile);
         try {

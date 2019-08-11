@@ -1,6 +1,6 @@
 package com.fdeight.miscellaneous.simple.network;
 
-import com.fdeight.miscellaneous.simple.network.DataAccess.IniFileSettingsAccess;
+import com.fdeight.miscellaneous.simple.network.data_access.IniFileSettingsAccess;
 
 import java.io.*;
 import java.net.*;
