@@ -71,7 +71,6 @@ public class PartsTest {
         testNotComputed(PartsFull.factory, values, numParts);
     }
 
-    @SuppressWarnings("SameParameterValue")
     private void testNotComputed(final Parts.PartsFactory partsFactory, final int[] values, final int numParts) {
         final Parts parts = partsFactory.createParts(values, numParts);
         final int[] results = parts.compute();
