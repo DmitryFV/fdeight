@@ -7,7 +7,7 @@ public abstract class Parts {
         abstract Parts createParts(final int[] values, final int numParts);
     }
 
-    static final int[] EMPTY_RESULT = {};
+    private static final int[] EMPTY_RESULT = {};
 
     final int[] values;
 
@@ -24,9 +24,25 @@ public abstract class Parts {
         this.numParts = numParts;
     }
 
-    abstract int[] compute(final int[] values);
+    int[] compute() {
+        if (hasConditionsOfNoSolution()) {
+            return EMPTY_RESULT;
+        }
+        results = new int[values.length];
+        Arrays.fill(results, -1);
+        if (computeAlgorithm()) {
+            return results;
+        } else {
+            return EMPTY_RESULT;
+        }
+    }
 
-    boolean hasConditionsOfNoSolution() {
+    /**
+     * @return {@code true}, если решение найдено.
+     */
+    protected abstract boolean computeAlgorithm();
+
+    private boolean hasConditionsOfNoSolution() {
         int sumValues = 0;
         boolean hasNegative = false;
         for (final int value : values) {
@@ -65,7 +81,7 @@ public abstract class Parts {
 //                new int[]{-1, -2, 3, 6, -4, 7, -9, 12, 5, -2, 1, 2, 0, 3, 4, 16, 0, 0, 8},
 //                3);
         final long startTime = System.currentTimeMillis();
-        parts.results = parts.compute(parts.values);
+        parts.results = parts.compute();
         System.out.println(String.format("Time %d ms", System.currentTimeMillis() - startTime));
         parts.output();
     }

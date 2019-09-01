@@ -12,7 +12,7 @@ public class PartsTest {
     @SuppressWarnings("SameParameterValue")
     private void testCompute(final Parts.PartsFactory partsFactory, final int[] values, final int numParts) {
         final Parts parts = partsFactory.createParts(values, numParts);
-        final int[] results = parts.compute(values);
+        final int[] results = parts.compute();
         Assert.assertNotNull("results is null", results);
         Assert.assertEquals("values.length != results.length",
                 values.length, results.length);
@@ -67,7 +67,7 @@ public class PartsTest {
     @SuppressWarnings("SameParameterValue")
     private void testNotComputed(final Parts.PartsFactory partsFactory, final int[] values, final int numParts) {
         final Parts parts = partsFactory.createParts(values, numParts);
-        final int[] results = parts.compute(values);
+        final int[] results = parts.compute();
         Assert.assertNotNull("results is null", results);
         Assert.assertArrayEquals("results is not empty", new int[]{}, results);
     }
@@ -154,5 +154,12 @@ public class PartsTest {
         final int[] values = new int[]{5, 5, 0, 0, 0, 0, 0, 5, 5, 3, 3, 3, 3, 3};
         final int numParts = 5;
         testNotComputed(PartsFull.factory, values, numParts);
+    }
+
+    @Test
+    public void testDynamicNotComputed01() {
+        final int[] values = new int[]{1, 2, 3, 5};
+        final int numParts = 2;
+        testNotComputed(PartsDynamic.factory, values, numParts);
     }
 }

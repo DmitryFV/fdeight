@@ -24,18 +24,9 @@ public class PartsFull extends Parts {
     }
 
     @Override
-    int[] compute(final int[] values) {
-        results = new int[values.length];
-        Arrays.fill(results, -1);
+    protected boolean computeAlgorithm() {
         sum = new int[numParts];
-        if (hasConditionsOfNoSolution()) {
-            return EMPTY_RESULT;
-        }
-        if (computeElement(0)) {
-            return results;
-        } else {
-            return EMPTY_RESULT;
-        }
+        return computeElement(0);
     }
 
     private boolean computeElement(final int startIndex) {
