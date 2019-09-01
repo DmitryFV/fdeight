@@ -9,6 +9,8 @@ public abstract class Parts {
 
     private static final int[] EMPTY_RESULT = {};
 
+    static final int NOT_COMPUTED = -2;
+
     final int[] values;
 
     final int numParts;
@@ -29,7 +31,7 @@ public abstract class Parts {
             return EMPTY_RESULT;
         }
         results = new int[values.length];
-        Arrays.fill(results, -1);
+        Arrays.fill(results, NOT_COMPUTED);
         if (computeAlgorithm()) {
             checkResults();
             return results;
@@ -81,16 +83,21 @@ public abstract class Parts {
     }
 
     private void output() {
-        System.out.println(String.format("numParts: %d, values:", numParts));
+        System.out.println(String.format("numParts: %d, length: %d, values:", numParts, values.length));
         System.out.println(Arrays.toString(values));
-        int sumValues = 0;
-        for (final int value : values) {
-            sumValues += value;
-        }
+        final int sumValues = computeSumValues();
         final int sumPart = sumValues / numParts;
         System.out.println(String.format("Sum: %d, sumPart: %d", sumValues, sumPart));
         System.out.println("Results:");
         System.out.println(Arrays.toString(results));
+    }
+
+    int computeSumValues() {
+        int sumValues = 0;
+        for (final int value : values) {
+            sumValues += value;
+        }
+        return sumValues;
     }
 
     public static void main(final String[] args) {
@@ -103,6 +110,67 @@ public abstract class Parts {
 //        final Parts parts = PartsFull.factory.createParts(
 //                new int[]{-2, -1, -3, -8, -5, -1, -4, -6, -3, -6, -10, -2, -2, -2},
 //                5);
+//        final Parts parts = PartsFull.factory.createParts(
+//                new int[]{-1, -1, 2, 6, 3, -1, 2, 6, 3, -1, 2, 3, 4, 2, 3, 4},
+//                2);
+//        final Parts parts = PartsFull.factory.createParts(
+//                new int[]{25, 1, 24, 0, 0, 1, 2, 3, 4, 10, 5, -25, 50, -1, 2, -2, 3, 23,
+//                        25, 1, 24, 0, 0, 1, 2, 3, 4, 10, 5, -25, 50, -1, 2, -2, 3, 23,
+//                        25, 1, 24, 0, 0, 1, 2, 3, 4, 10, 5, -25, 50, -1, 2, -2, 3, 23,
+//                        25, 1, 24, 0, 0, 1, 2, 3, 4, 10, 5, -25, 50, -1, 2, -2, 3, 23,
+//                },
+//                2);
+//        final Parts parts = PartsFull.factory.createParts(
+//                new int[]{10750, 99, 4, 4, 1, 2, 3, 4, 10, 98, 10750, 1},
+//                2);
+//        final Parts parts = PartsDynamic.factory.createParts(
+//                new int[]{10750, 10750, 4, 4, 1, 2, 3, 4, 10, 99, 98, 1,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 12, 3, 23,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 12, 3, 23,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 32, 3, 24,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 32, 3, 24,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 52, 3, 24,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 52, 3, 24,
+//                        55, 1, 24, 12, 10, 1, 2, 3, 4, 16, 5, 25, 50, 1, 2, 62, 3, 23,
+//                        55, 1, 24, 12, 10, 1, 2, 3, 4, 16, 5, 25, 50, 1, 2, 62, 3, 23,
+//                        55, 1, 24, 10, 11, 1, 2, 3, 4, 16, 5, 75, 50, 1, 2, 72, 3, 23,
+//                        55, 1, 24, 10, 11, 1, 2, 3, 4, 16, 5, 75, 50, 1, 2, 72, 3, 23,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 12, 3, 23,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 12, 3, 23,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 32, 3, 24,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 32, 3, 24,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 52, 3, 24,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 52, 3, 24,
+//                        55, 1, 24, 12, 10, 1, 2, 3, 4, 16, 5, 25, 50, 1, 2, 62, 3, 23,
+//                        55, 1, 24, 12, 10, 1, 2, 3, 4, 16, 5, 25, 50, 1, 2, 62, 3, 23,
+//                        55, 1, 24, 10, 11, 1, 2, 3, 4, 16, 5, 75, 50, 1, 2, 72, 3, 23,
+//                        55, 1, 24, 10, 11, 1, 2, 3, 4, 16, 5, 75, 50, 1, 2, 72, 3, 23,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 12, 3, 23,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 12, 3, 23,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 32, 3, 24,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 32, 3, 24,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 52, 3, 24,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 52, 3, 24,
+//                        55, 1, 24, 12, 10, 1, 2, 3, 4, 16, 5, 25, 50, 1, 2, 62, 3, 23,
+//                        55, 1, 24, 12, 10, 1, 2, 3, 4, 16, 5, 25, 50, 1, 2, 62, 3, 23,
+//                        55, 1, 24, 10, 11, 1, 2, 3, 4, 16, 5, 75, 50, 1, 2, 72, 3, 23,
+//                        55, 1, 24, 10, 11, 1, 2, 3, 4, 16, 5, 75, 50, 1, 2, 72, 3, 23,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 12, 3, 23,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 12, 3, 23,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 32, 3, 24,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 32, 3, 24,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 52, 3, 24,
+//                        25, 1, 24, 10, 10, 1, 2, 3, 4, 10, 5, 25, 50, 1, 2, 52, 3, 24,
+//                        55, 1, 24, 12, 10, 1, 2, 3, 4, 16, 5, 25, 50, 1, 2, 62, 3, 23,
+//                        55, 1, 24, 12, 10, 1, 2, 3, 4, 16, 5, 25, 50, 1, 2, 62, 3, 23,
+//                        55, 1, 24, 10, 11, 1, 2, 3, 4, 16, 5, 75, 50, 1, 2, 72, 3, 23,
+//                        55, 1, 24, 10, 11, 1, 2, 3, 4, 16, 5, 75, 50, 1, 2, 72, 3, 23,
+//                        10750, 10750, 4, 4, 1, 2, 3, 4, 10, 99, 98, 1,
+//                        10750, 10750, 4, 4, 1, 2, 3, 4, 10, 99, 98, 1,
+//                        10759, 10750, 4, 4, 1, 2, 3, 4, 10, 99, 98, 1, 5000,
+//                        10759, 10750, 4, 4, 1, 2, 3, 4, 10, 99, 98, 1, 5000,
+//                },
+//                2);
         final long startTime = System.currentTimeMillis();
         parts.results = parts.compute();
         System.out.println(String.format("Time %d ms", System.currentTimeMillis() - startTime));
