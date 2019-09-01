@@ -5,12 +5,12 @@ import org.junit.Test;
 
 public class PartsTest {
     @Test
-    public void testFullCompute01() {
-        testCompute(PartsFull.factory, new int[]{1, 2, 3, 4}, 2);
+    public void testFullComputed01() {
+        testComputed(PartsFull.factory, new int[]{1, 2, 3, 4}, 2);
     }
 
     @SuppressWarnings("SameParameterValue")
-    private void testCompute(final Parts.PartsFactory partsFactory, final int[] values, final int numParts) {
+    private void testComputed(final Parts.PartsFactory partsFactory, final int[] values, final int numParts) {
         final Parts parts = partsFactory.createParts(values, numParts);
         final int[] results = parts.compute();
         Assert.assertNotNull("results is null", results);
@@ -26,35 +26,35 @@ public class PartsTest {
     }
 
     @Test
-    public void testFullCompute02() {
-        testCompute(PartsFull.factory, new int[]{1, 2, 6, 3}, 2);
+    public void testFullComputed02() {
+        testComputed(PartsFull.factory, new int[]{1, 2, 6, 3}, 2);
     }
 
     @Test
-    public void testFullCompute03() {
-        testCompute(PartsFull.factory, new int[]{1, 2, 6, 3, 1, 5}, 3);
+    public void testFullComputed03() {
+        testComputed(PartsFull.factory, new int[]{1, 2, 6, 3, 1, 5}, 3);
     }
 
     @Test
-    public void testFullCompute04() {
-        testCompute(PartsFull.factory, new int[]{1, 2, 6, 4, 1, 5, 3, 2}, 4);
+    public void testFullComputed04() {
+        testComputed(PartsFull.factory, new int[]{1, 2, 6, 4, 1, 5, 3, 2}, 4);
     }
 
     @Test
-    public void testFullCompute05() {
-        testCompute(PartsFull.factory, new int[]{-20, -20}, 2);
+    public void testFullComputed05() {
+        testComputed(PartsFull.factory, new int[]{-20, -20}, 2);
     }
 
     @Test
-    public void testFullCompute06() {
-        testCompute(PartsFull.factory, new int[]{-1, 2, 3, 6}, 2);
+    public void testFullComputed06() {
+        testComputed(PartsFull.factory, new int[]{-1, 2, 3, 6}, 2);
     }
 
     @Test
-    public void testFullCompute07() {
+    public void testFullComputed07() {
         final int[] values = new int[]{6, 20, 7, 6, 5, 6, -4, 5, 14, -1, 10, 24, -5, 7};
         final int numParts = 5;
-        testCompute(PartsFull.factory, values, numParts);
+        testComputed(PartsFull.factory, values, numParts);
     }
 
     @Test
