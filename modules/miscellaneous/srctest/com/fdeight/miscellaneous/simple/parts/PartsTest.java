@@ -58,6 +58,13 @@ public class PartsTest {
     }
 
     @Test
+    public void testFullComputed08() {
+        final int[] values = new int[]{-2, -1, -3, -8, -5, -1, -4, -6, -3, -6, -10, -2, -2, -2};
+        final int numParts = 5;
+        testComputed(PartsFull.factory, values, numParts);
+    }
+
+    @Test
     public void testFullNotComputed01() {
         final int[] values = new int[]{1, 2, 3, 5};
         final int numParts = 2;
