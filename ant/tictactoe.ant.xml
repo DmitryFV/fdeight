@@ -1,0 +1,60 @@
+<project name="tictacktoe" default="build.jar">
+    <property name="name.root" value="fdeight"/>
+
+    <property name="name.module" value="tictactoe"/>
+
+    <property name="dir.build" value="../.build"/>
+
+    <property name="dir.classes" value="${dir.build}/classes"/>
+
+    <property name="dir.src.module" value="../modules/${name.module}/src/com/${name.root}/${name.module}"/>
+
+    <property name="dir.lib" value="../lib"/>
+
+    <property name="dir.env" value="../env"/>
+
+    <property name="dir.release" value="../release"/>
+
+    <property name="dir.release.module" value="${dir.release}/${name.module}"/>
+
+    <property name="file.jar" value="${dir.release.module}/${name.module}.jar"/>
+
+    <path id="libs.some.lib">
+        <fileset dir="${dir.lib}/some_lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="libs.main.module">
+        <path refid="libs.some.lib"/>
+    </path>
+
+    <target name="clean">
+        <delete dir="${dir.build}"/>
+        <delete dir="${dir.release.module}"/>
+    </target>
+
+    <target name="mkdirs" depends="clean">
+        <mkdir dir="${dir.build}"/>
+        <mkdir dir="${dir.classes}"/>
+    </target>
+
+    <target name="compile" depends="mkdirs">
+        <javac includeantruntime="false" srcdir="${dir.src.module}" destdir="${dir.classes}">
+            <classpath>
+                <path refid="libs.main.module"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="build.jar" depends="compile">
+        <jar destfile="${file.jar}"
+             basedir="${dir.classes}"
+             compress="false"
+             index="true">
+             <manifest>
+                 <attribute name="Main-Class" value="com.${name.root}.${name.module}.TTT"/>
+             </manifest>
+        </jar>
+    </target>
+</project>
