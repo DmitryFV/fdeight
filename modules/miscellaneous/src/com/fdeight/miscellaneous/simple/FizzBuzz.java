@@ -1,7 +1,7 @@
 package com.fdeight.miscellaneous.simple;
 
 public class FizzBuzz {
-    public static void main(final String args[]) {
+    public static void main(final String[] args) {
         for (int number = 1; number <= 100; number++) {
             if (number % 3 == 0 || number % 5 == 0) {
                 if (number % 3 == 0 && number % 5 == 0) {
