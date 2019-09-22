@@ -25,11 +25,11 @@ public class Task01 {
         return result;
     }
 
-    static long withDublicates(final int count, final int numSymbols) {
+    static long withDuplicates(final int count, final int numSymbols) {
         return (long) Math.pow(numSymbols, count);
     }
 
-    static long withDublicatesAll(final int count, final int numSymbols) {
+    static long withDuplicatesAll(final int count, final int numSymbols) {
         return countAllWith(count, numSymbols, 0, 0);
     }
 
@@ -44,11 +44,11 @@ public class Task01 {
         return newResult;
     }
 
-    static long withoutDublicates(final int count, final int numSymbols) {
+    static long withoutDuplicates(final int count, final int numSymbols) {
         return factorial(numSymbols) / factorial(numSymbols - count);
     }
 
-    static long withoutDublicatesAll(final int count, final int numSymbols) {
+    static long withoutDuplicatesAll(final int count, final int numSymbols) {
         return countAllWithout(count, numSymbols, 0, 0, new HashSet<>());
     }
 
@@ -71,9 +71,9 @@ public class Task01 {
 
     public static void main(final String[] args) {
         System.out.println(factorial(4));
-        System.out.println(withDublicates(6, 9));
-        System.out.println(withDublicatesAll(6, 9));
-        System.out.println(withoutDublicates(7, 12));
-        System.out.println(withoutDublicatesAll(7, 12));
+        System.out.println(withDuplicates(6, 9));
+        System.out.println(withDuplicatesAll(6, 9));
+        System.out.println(withoutDuplicates(7, 12));
+        System.out.println(withoutDuplicatesAll(7, 12));
     }
 }
