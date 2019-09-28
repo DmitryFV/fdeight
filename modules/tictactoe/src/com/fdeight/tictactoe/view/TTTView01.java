@@ -3,6 +3,7 @@ package com.fdeight.tictactoe.view;
 import com.fdeight.tictactoe.controller.TTTControllerV01;
 import com.fdeight.tictactoe.model.info.TTTInfo;
 import com.fdeight.tictactoe.model.info.TTTInfo02;
+import com.fdeight.utils.Utils;
 
 import java.io.PrintStream;
 import java.util.InputMismatchException;
@@ -25,10 +26,7 @@ public class TTTView01 {
         }
 
         public static Item convert(final int formatted) {
-            if (formatted < 0 || formatted > values().length - 1) {
-                throw new IllegalArgumentException(String.format("convert(): formatted (%d) not in [%d;%d]",
-                        formatted, 0, values().length - 1));
-            }
+            Utils.checkArgument(formatted, 0, values().length - 1, "convert(), formatted");
             return values()[formatted];
         }
     }

@@ -3,6 +3,7 @@ package com.fdeight.tictactoe.view.graphic;
 import com.fdeight.tictactoe.model.info.TTTInfo;
 import com.fdeight.tictactoe.model.info.TTTInfo02;
 import com.fdeight.tictactoe.view.TTTView02;
+import com.fdeight.utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,10 +24,7 @@ public class MainWindow extends JFrame implements KeyListener, MouseListener {
         ZERO;
 
         public static Item convert(final int formatted) {
-            if (formatted < 0 || formatted > values().length - 1) {
-                throw new IllegalArgumentException(String.format("convert(): formatted (%d) not in [%d;%d]",
-                        formatted, 0, values().length - 1));
-            }
+            Utils.checkArgument(formatted, 0, values().length - 1, "convert(), formatted");
             return values()[formatted];
         }
     }
