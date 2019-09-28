@@ -1,0 +1,78 @@
+<project default="tictactoe.jar" basedir="..">
+    <property name="name.root" value="fdeight"/>
+    <property name="dir.build" value="${basedir}/.build"/>
+    <property name="dir.classes" value="${dir.build}/classes"/>
+    <property name="dir.release" value="${basedir}/release"/>
+
+    <property name="name.module.tictactoe" value="tictactoe"/>
+    <property name="dir.src.module.tictactoe"
+              value="${basedir}/modules/${name.module.tictactoe}/src/com/${name.root}/${name.module.tictactoe}"/>
+    <property name="dir.release.module.tictactoe" value="${dir.release}/${name.module.tictactoe}"/>
+
+    <property name="dir.app" value="${dir.release.module.tictactoe}"/>
+
+    <property name="name.module.utils" value="utils"/>
+    <property name="dir.src.module.utils"
+              value="${basedir}/modules/${name.module.utils}/src/com/${name.root}/${name.module.utils}"/>
+    <property name="name.utils.jar" value="${name.module.utils}.jar"/>
+
+    <target name="utils.jar" depends="clean" description="Builds utils">
+        <!-- Создание каталогов -->
+        <mkdir dir="${dir.classes}"/>
+
+        <!-- Компиляция исходных файлов -->
+        <javac srcdir="${dir.src.module.utils}"
+               destdir="${dir.classes}"
+               debug="false"
+               deprecation="true"
+               optimize="true"
+               includeantruntime="false">
+        </javac>
+
+        <!-- Копирование необходимых файлов -->
+        <copy todir="${dir.classes}">
+            <fileset dir="${dir.src.module.utils}" includes="**/*.*" excludes="**/*.java"/>
+        </copy>
+
+        <!-- Создание JAR-файла -->
+        <jar jarfile="${dir.app}/${name.module.utils}.jar">
+            <fileset dir="${dir.classes}"/>
+        </jar>
+    </target>
+
+    <!-- Сборка приложения -->
+    <target name="tictactoe.jar" depends="clean, utils.jar" description="Builds the application">
+        <!-- Создание каталогов -->
+        <mkdir dir="${dir.classes}"/>
+
+        <!-- Компиляция исходных файлов -->
+        <javac srcdir="${dir.src.module.tictactoe}"
+               destdir="${dir.classes}"
+               debug="false"
+               deprecation="true"
+               optimize="true"
+               includeantruntime="false"
+               classpath="${name.utils.jar}">
+        </javac>
+
+        <!-- Копирование необходимых файлов -->
+        <copy todir="${dir.classes}">
+            <fileset dir="${dir.src.module.tictactoe}" includes="**/*.*" excludes="**/*.java"/>
+        </copy>
+
+        <!-- Создание JAR-файла -->
+        <jar jarfile="${dir.release.module.tictactoe}/${name.module.tictactoe}.jar">
+            <fileset dir="${dir.classes}"/>
+            <manifest>
+                <attribute name="Main-Class" value="com.${name.root}.${name.module.tictactoe}.TTT"/>
+                <attribute name="Class-Path" value="${name.utils.jar}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- Очистка -->
+    <target name="clean" description="Removes all temporary files">
+        <!-- Удаление файлов -->
+        <delete dir="${dir.classes}"/>
+    </target>
+</project>
