@@ -1,3 +1,4 @@
+<!-- Комментарий для отслеживания правильности кодировки (UTF-8) -->
 <project name="mvcsimple" default="build.jar">
     <property name="name.root" value="fdeight"/>
 

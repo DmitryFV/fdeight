@@ -1,8 +1,10 @@
+<!-- Комментарий для отслеживания правильности кодировки (UTF-8) -->
 <project name="tictactoe.utils.yguard" default="tictactoe.yguard.jar" basedir="..">
     <property name="name.root" value="fdeight"/>
     <property name="dir.build" value="${basedir}/.build"/>
     <property name="dir.classes" value="${dir.build}/classes"/>
     <property name="dir.release" value="${basedir}/release"/>
+    <property name="dir.lib" value="${basedir}/lib"/>
 
     <property name="name.module.tictactoe" value="tictactoe"/>
     <property name="name.module.tictactoe.jar" value="${name.module.tictactoe}.jar"/>
@@ -23,6 +25,9 @@
               value="${basedir}/modules/${name.module.utils}/src/com/${name.root}/${name.module.utils}"/>
     <property name="name.utils.jar" value="${name.module.utils}.jar"/>
 
+    <property name="dir.lib.yguard271" value="${dir.lib}/yguard-2.7.1"/>
+    <property name="ObfuscationAnnotation.jar" value="ObfuscationAnnotation.jar"/>
+    <property name="path.ObfuscationAnnotation.jar" value="${dir.lib.yguard271}/${ObfuscationAnnotation.jar}"/>
     <property name="dir.release.app.yguard" value="${dir.release.app}.yguard"/>
     <property name="name.app.yguard.jar" value="${name.app}.yguard.jar"/>
     <property name="path.name.app.yguard.jar" value="${dir.release.app.yguard}/${name.app.yguard.jar}"/>
@@ -32,10 +37,13 @@
 
     <target name="tictactoe.yguard.jar" depends="tictactoe.jar">
         <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask"
-                 classpath="${basedir}/lib/yguard-2.7.1/yguard.jar"/>
+                 classpath="${dir.lib.yguard271}/yguard.jar"/>
         <!-- the following can be adjusted to your needs -->
         <yguard>
             <inoutpair in="${path.name.app.jar}" out="${path.name.app.yguard.jar}"/>
+            <externalclasses>
+                <pathelement location="${path.ObfuscationAnnotation.jar}"/>
+            </externalclasses>
             <rename mainclass="${mainclass}" logfile="${path.renamelog}">
                 <property name="error-checking" value="pedantic"/>
                 <property name="naming-scheme" value="mix"/>
@@ -50,7 +58,8 @@
                debug="false"
                deprecation="true"
                optimize="true"
-               includeantruntime="false">
+               includeantruntime="false"
+               classpath="${path.ObfuscationAnnotation.jar}">
         </javac>
 
         <!-- Копирование необходимых файлов -->
@@ -61,6 +70,9 @@
         <!-- Создание JAR-файла -->
         <jar jarfile="${dir.release.app}/${name.module.utils.jar}">
             <fileset dir="${dir.classes.app}"/>
+            <manifest>
+                <attribute name="Class-Path" value="${name.utils.jar}"/>
+            </manifest>
         </jar>
     </target>
 

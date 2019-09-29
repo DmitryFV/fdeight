@@ -1,3 +1,4 @@
+<!-- Комментарий для отслеживания правильности кодировки (UTF-8) -->
 <project name="tictactoe.utils.ant" default="tictactoe.jar" basedir="..">
     <property name="name.root" value="fdeight"/>
     <property name="dir.build" value="${basedir}/.build"/>

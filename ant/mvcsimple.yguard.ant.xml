@@ -1,3 +1,4 @@
+<!-- Комментарий для отслеживания правильности кодировки (UTF-8) -->
 <project name="mvcsimple.yguard" default="mvcsimple.yguard" basedir="..">
     <property name="name.root" value="fdeight"/>
     <property name="name.module" value="mvcsimple"/>

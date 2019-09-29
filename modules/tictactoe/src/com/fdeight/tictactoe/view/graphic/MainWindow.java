@@ -3,6 +3,7 @@ package com.fdeight.tictactoe.view.graphic;
 import com.fdeight.tictactoe.model.info.TTTInfo;
 import com.fdeight.tictactoe.model.info.TTTInfo02;
 import com.fdeight.tictactoe.view.TTTView02;
+import com.fdeight.utils.DataByName;
 import com.fdeight.utils.Utils;
 
 import javax.swing.*;
@@ -70,9 +71,13 @@ public class MainWindow extends JFrame implements KeyListener, MouseListener {
      */
     private static final Dimension MAIN_WINDOW_MAX_SIZE = new Dimension(700, 500);
     /**
+     * Начальная координата по оси Y.
+     */
+    private static final int TOP = 50;
+    /**
      * Зазор между элементами.
      */
-    private static final int GAP = 50;
+    private static final int GAP = 30;
     /**
      * Размер рамки.
      */
@@ -233,7 +238,7 @@ public class MainWindow extends JFrame implements KeyListener, MouseListener {
 
     private void paintPlay(final Graphics g, final TTTInfo info, final int size, final Command[] commands) {
         final int countPresentedCommand = printRequest(g, commands);
-        topField = countPresentedCommand * GAP;
+        topField = TOP + (countPresentedCommand - 1) * GAP;
         drawField(g, info, size);
     }
 
@@ -253,16 +258,24 @@ public class MainWindow extends JFrame implements KeyListener, MouseListener {
                 continue;
             }
             if (countPresentedCommand == 0) {
-                g.drawString(String.format("Enter command, mode: %s, state: %s", mode, state), GAP, GAP);
+                g.drawString(String.format("Enter command, mode: %s, state: %s", mode, state), GAP, TOP);
                 countPresentedCommand++;
             }
-            g.drawString(String.format("%s: %s", command.title, command.strKeyCode), GAP, (i + 2) * GAP);
+            g.drawString(String.format("%s: %s", command.title, command.strKeyCode), GAP, TOP + (i + 1) * GAP);
             countPresentedCommand++;
         }
         if (countPresentedCommand == 0) {
-            g.drawString(String.format("Mode: %s, state: %s", mode, state), GAP, GAP);
+            g.drawString(String.format("Mode: %s, state: %s", mode, state), GAP, TOP);
             countPresentedCommand++;
         }
+        final String s = "com.fdeight.utils.Utils";
+        g.drawString(String.format("%s", DataByName.getValueByReflection(s)),
+                GAP, TOP + countPresentedCommand * GAP);
+        countPresentedCommand++;
+        final String s1 = DataByName.getComString() + ".fdeight.utils." + DataByName.class.getSimpleName();
+        g.drawString(String.format("%s", DataByName.getValueByReflection(s1)),
+                GAP, TOP + countPresentedCommand * GAP);
+        countPresentedCommand++;
         return countPresentedCommand;
     }
 
