@@ -1,0 +1,102 @@
+<project name="mvcsimple.yguard" default="mvcsimple.yguard" basedir="..">
+    <property name="name.root" value="fdeight"/>
+    <property name="name.module" value="mvcsimple"/>
+    <property name="name.app" value="${name.module}"/>
+    <property name="name.app.jar" value="${name.app}.jar"/>
+
+    <property name="mainclass" value="com.${name.root}.${name.module}.MVCSimple"/>
+
+    <property name="dir.build" value="${basedir}/.build"/>
+    <property name="dir.classes" value="${dir.build}/classes"/>
+    <property name="dir.src.module" value="${basedir}/modules/${name.module}/src/com/${name.root}/${name.module}"/>
+    <property name="dir.lib" value="${basedir}/lib"/>
+    <property name="dir.env" value="${basedir}/env"/>
+    <property name="dir.release" value="${basedir}/release"/>
+    <property name="dir.release.app" value="${dir.release}/${name.app}.yguard"/>
+    <property name="path.name.app.jar" value="${dir.release.app}/${name.app.jar}"/>
+    <property name="file.jar" value="${dir.release.app}/${name.app}.jar"/>
+
+    <property name="name.app.yguard.jar" value="${name.app}.yguard.jar"/>
+    <property name="path.name.app.yguard.jar" value="${dir.release.app}/${name.app.yguard.jar}"/>
+    <property name="renamelog" value="${name.app}.renamelog.xml"/>
+    <property name="dir.release.app.renamelog" value="${dir.release.app}.renamelog"/>
+    <property name="path.renamelog" value="${dir.release.app.renamelog}/${renamelog}"/>
+
+    <target name="mvcsimple.yguard" depends="build.jar">
+        <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask"
+                 classpath="${basedir}/lib/yguard-2.7.1/yguard.jar"/>
+        <!-- the following can be adjusted to your needs -->
+        <yguard>
+            <inoutpair in="${path.name.app.jar}" out="${path.name.app.yguard.jar}"/>
+            <!--
+                        <shrink logfile="${shrinklog}">
+                            <keep>
+                                <class classes="protected"
+                                       methods="protected" fields="protected">
+                                    <patternset>
+                                        <include name="com.mycompany.publicapi.**.*"/>
+                                        <exclude name="com.mycompany.publicapi.private.*"/>
+                                        <include name="com.mycompany.menu.reflection.**.*"/>
+                                    </patternset>
+                                </class>
+                            </keep>
+                        </shrink>
+            -->
+                        <rename mainclass="${mainclass}" logfile="${path.renamelog}">
+                            <property name="error-checking" value="pedantic"/>
+                            <property name="naming-scheme" value="mix"/>
+                            <!--
+                            <keep>
+                                <class classes="protected"
+                                       methods="protected" fields="protected">
+                                    <patternset>
+                                        <include name="com.mycompany.publicapi.**.*"/>
+                                        <exclude name="com.mycompany.publicapi.private.*"/>
+                                    </patternset>
+                                </class>
+                            </keep>
+                            -->
+                        </rename>
+                    </yguard>
+                </target>
+
+                <path id="libs.some.lib">
+                    <fileset dir="${dir.lib}/some_lib">
+                        <include name="*.jar"/>
+                    </fileset>
+                </path>
+
+                <path id="libs.main.module">
+                    <path refid="libs.some.lib"/>
+                </path>
+
+                <target name="clean">
+                    <delete dir="${dir.build}"/>
+                    <delete dir="${dir.release.app}"/>
+                </target>
+
+                <target name="mkdirs" depends="clean">
+                    <mkdir dir="${dir.build}"/>
+                    <mkdir dir="${dir.classes}"/>
+                    <mkdir dir="${dir.release.app.renamelog}"/>
+                </target>
+
+                <target name="compile" depends="mkdirs">
+                    <javac includeantruntime="false" srcdir="${dir.src.module}" destdir="${dir.classes}">
+                        <classpath>
+                            <path refid="libs.main.module"/>
+                        </classpath>
+                    </javac>
+                </target>
+
+                <target name="build.jar" depends="compile">
+                    <jar destfile="${file.jar}"
+                         basedir="${dir.classes}"
+                         compress="false"
+                         index="true">
+                        <manifest>
+                            <attribute name="Main-Class" value="${mainclass}"/>
+                        </manifest>
+                    </jar>
+                </target>
+            </project>

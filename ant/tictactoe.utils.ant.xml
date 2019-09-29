@@ -1,4 +1,4 @@
-<project default="tictactoe.jar" basedir="..">
+<project name="tictactoe.utils.ant" default="tictactoe.jar" basedir="..">
     <property name="name.root" value="fdeight"/>
     <property name="dir.build" value="${basedir}/.build"/>
     <property name="dir.classes" value="${dir.build}/classes"/>

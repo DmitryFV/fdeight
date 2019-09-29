@@ -1,0 +1,108 @@
+<project name="tictactoe.utils.yguard" default="tictactoe.yguard.jar" basedir="..">
+    <property name="name.root" value="fdeight"/>
+    <property name="dir.build" value="${basedir}/.build"/>
+    <property name="dir.classes" value="${dir.build}/classes"/>
+    <property name="dir.release" value="${basedir}/release"/>
+
+    <property name="name.module.tictactoe" value="tictactoe"/>
+    <property name="name.module.tictactoe.jar" value="${name.module.tictactoe}.jar"/>
+    <property name="name.app" value="${name.module.tictactoe}"/>
+    <property name="name.app.jar" value="${name.app}.jar"/>
+    <property name="dir.classes.app" value="${dir.classes}/${name.app}"/>
+    <property name="dir.src.module.tictactoe"
+              value="${basedir}/modules/${name.module.tictactoe}/src/com/${name.root}/${name.module.tictactoe}"/>
+    <property name="dir.release.module.tictactoe" value="${dir.release}/${name.module.tictactoe}"/>
+    <property name="dir.release.app" value="${dir.release.module.tictactoe}"/>
+    <property name="path.name.app.jar" value="${dir.release.app}/${name.app.jar}"/>
+
+    <property name="mainclass" value="com.${name.root}.${name.module.tictactoe}.TTT"/>
+
+    <property name="name.module.utils" value="utils"/>
+    <property name="name.module.utils.jar" value="${name.module.utils}.jar"/>
+    <property name="dir.src.module.utils"
+              value="${basedir}/modules/${name.module.utils}/src/com/${name.root}/${name.module.utils}"/>
+    <property name="name.utils.jar" value="${name.module.utils}.jar"/>
+
+    <property name="dir.release.app.yguard" value="${dir.release.app}.yguard"/>
+    <property name="name.app.yguard.jar" value="${name.app}.yguard.jar"/>
+    <property name="path.name.app.yguard.jar" value="${dir.release.app.yguard}/${name.app.yguard.jar}"/>
+    <property name="renamelog" value="${name.app}.renamelog.xml"/>
+    <property name="dir.release.app.renamelog" value="${dir.release.app}.renamelog"/>
+    <property name="path.renamelog" value="${dir.release.app.renamelog}/${renamelog}"/>
+
+    <target name="tictactoe.yguard.jar" depends="tictactoe.jar">
+        <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask"
+                 classpath="${basedir}/lib/yguard-2.7.1/yguard.jar"/>
+        <!-- the following can be adjusted to your needs -->
+        <yguard>
+            <inoutpair in="${path.name.app.jar}" out="${path.name.app.yguard.jar}"/>
+            <rename mainclass="${mainclass}" logfile="${path.renamelog}">
+                <property name="error-checking" value="pedantic"/>
+                <property name="naming-scheme" value="mix"/>
+            </rename>
+        </yguard>
+    </target>
+
+    <target name="utils.jar" depends="mkdirs" description="Builds utils">
+        <!-- Компиляция исходных файлов -->
+        <javac srcdir="${dir.src.module.utils}"
+               destdir="${dir.classes.app}"
+               debug="false"
+               deprecation="true"
+               optimize="true"
+               includeantruntime="false">
+        </javac>
+
+        <!-- Копирование необходимых файлов -->
+        <copy todir="${dir.classes.app}">
+            <fileset dir="${dir.src.module.utils}" includes="**/*.*" excludes="**/*.java"/>
+        </copy>
+
+        <!-- Создание JAR-файла -->
+        <jar jarfile="${dir.release.app}/${name.module.utils.jar}">
+            <fileset dir="${dir.classes.app}"/>
+        </jar>
+    </target>
+
+    <!-- Сборка приложения -->
+    <target name="tictactoe.jar" depends="mkdirs, utils.jar" description="Builds the application">
+        <!-- Компиляция исходных файлов -->
+        <javac srcdir="${dir.src.module.tictactoe}"
+               destdir="${dir.classes.app}"
+               debug="false"
+               deprecation="true"
+               optimize="true"
+               includeantruntime="false"
+               classpath="${name.utils.jar}">
+        </javac>
+
+        <!-- Копирование необходимых файлов -->
+        <copy todir="${dir.classes.app}">
+            <fileset dir="${dir.src.module.tictactoe}" includes="**/*.*" excludes="**/*.java"/>
+        </copy>
+
+        <!-- Создание JAR-файла -->
+        <jar jarfile="${dir.release.app}/${name.module.tictactoe.jar}">
+            <fileset dir="${dir.classes.app}"/>
+            <manifest>
+                <attribute name="Main-Class" value="${mainclass}"/>
+                <attribute name="Class-Path" value="${name.utils.jar}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="mkdirs" depends="clean">
+        <mkdir dir="${dir.build}"/>
+        <mkdir dir="${dir.classes.app}"/>
+        <mkdir dir="${dir.release.app.yguard}"/>
+        <mkdir dir="${dir.release.app.renamelog}"/>
+    </target>
+
+    <!-- Очистка -->
+    <target name="clean" description="Removes all temporary files">
+        <!-- Удаление файлов -->
+        <delete dir="${dir.build}"/>
+        <delete dir="${dir.classes.app}"/>
+        <delete dir="${dir.release.app}"/>
+    </target>
+</project>
