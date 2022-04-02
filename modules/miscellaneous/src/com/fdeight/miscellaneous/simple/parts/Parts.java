@@ -88,8 +88,19 @@ public abstract class Parts {
         final int sumValues = computeSumValues();
         final int sumPart = sumValues / numParts;
         System.out.println(String.format("Sum: %d, sumPart: %d", sumValues, sumPart));
+        System.out.println(results.length == 0 ? "Impossible" : "Possible");
         System.out.println("Results:");
         System.out.println(Arrays.toString(results));
+        if (results.length > 0) {
+            for (int i = 0; i < numParts; i++) {
+                for (int j = 0; j < results.length; j++) {
+                    if (results[j] == i) {
+                        System.out.print(String.format("%d ", values[j]));
+                    }
+                }
+                System.out.println();
+            }
+        }
     }
 
     int computeSumValues() {
