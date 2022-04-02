@@ -37,6 +37,22 @@ public class PartsFull extends Parts {
                 results[startIndex] = 0;
                 return computeElement(startIndex + 1);
             }
+            if (values[startIndex] == sumPart) {
+                // Данная оптимизация назначает число, равное сумме одной части, в отдельную группу,
+                // если есть свободная группа, что может десятки раз сокращать время работы.
+                int maxPart = -1;
+                for (int i = 0; i < startIndex; i++) {
+                    maxPart = Math.max(maxPart, results[i]);
+                }
+                if (maxPart >= numParts) {
+                    throw new IllegalStateException(String.format("maxPart (%d) > numParts (%d)",
+                            maxPart, numParts));
+                }
+                if (maxPart < numParts - 1) {
+                    results[startIndex] = maxPart + 1;
+                    return computeElement(startIndex + 1);
+                }
+            }
             // Данная оптимизация (maxPartNumber) немного замедляет (скорее всего, за счет лишнего вычисления минимума)
             // в ситуациях, когда решение существует, но дает большой выигрыш (в разы), когда решения не существует
             // (можем отсекать часть вариантов, симметричных ранее проверенным вариантам).

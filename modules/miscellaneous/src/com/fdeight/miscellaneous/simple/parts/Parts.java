@@ -16,6 +16,12 @@ public abstract class Parts {
     final int numParts;
 
     /**
+     * Вспомогательная переменная, равная сумме всех значений, деленной нацело на количество частей
+     * (если решение существует, то это в точности сумма значений в одной части).
+     */
+    final int sumPart;
+
+    /**
      * Массив длиной такой же, как у {@link #values}.
      * Каждый элемент - номер части (нумерация с 0), в которую включен элемент с тем же индексом в {@link #values}.
      */
@@ -24,6 +30,11 @@ public abstract class Parts {
     Parts(final int[] values, final int numParts) {
         this.values = values;
         this.numParts = numParts;
+        int sumValues = 0;
+        for (final int value : values) {
+            sumValues += value;
+        }
+        sumPart = sumValues / numParts;
     }
 
     int[] compute() {
@@ -57,10 +68,13 @@ public abstract class Parts {
         if (sumValues % numParts != 0) {
             return true;
         }
+        if (sumPart * numParts != sumValues) {
+            throw new IllegalStateException(String.format("sumPart (%d) * numParts (%d) != sumValues (%d)",
+                    sumPart, numParts, sumValues));
+        }
         if (hasNegative) {
             return false;
         }
-        final int sumPart = sumValues / numParts;
         for (final int value : values) {
             if (value > sumPart) {
                 return true;
@@ -113,8 +127,26 @@ public abstract class Parts {
 
     public static void main(final String[] args) {
         final Parts parts = PartsFull.factory.createParts(
-                new int[]{25, 1, 24, 0, 0, 1, 2, 3, 4, 10, 5, -25, 50, -1, 2, -2, 3, 23},
+                new int[]{12, 13, 0, 0, 1, 25, 2, 3, 25, 4, 10, 5, -1, 2, -2, 3, 23},
                 5);
+//        final Parts parts = PartsFull.factory.createParts(
+//                new int[]{12, 13, 0, 0, 1, 25, 2, 25, 3, 25, 4, 10, 5, -1, 2, -2, 3, 23},
+//                6);
+//        final Parts parts = PartsFull.factory.createParts(
+//                new int[]{25, 0, 0, 1, 25, 2, 25, 3, 25, 4, 10, 5, -1, 2, -2, 3, 23},
+//                6);
+//        final Parts parts = PartsFull.factory.createParts(
+//                new int[]{25, 0, 0, 1, 2, 25, 3, 4, 10, 5, -1, 2, -2, 3, 23},
+//                4);
+//        final Parts parts = PartsFull.factory.createParts(
+//                new int[]{25, 0, 0, 1, 2, 3, 4, 10, 5, -1, 2, -2, 3, 23},
+//                3);
+//        final Parts parts = PartsFull.factory.createParts(
+//                new int[]{25, 1, 24, 0, 0, 1, 2, 3, 4, 10, 5, -25, 50, -1, 2, -2, 3, 23},
+//                5);
+//        final Parts parts = PartsFull.factory.createParts(
+//                new int[]{25, 1, 24, 0, 0, 1, 25, 2, 3, 4, 10, 5, -1, 2, -2, 3, 23},
+//                5);
 //        final Parts parts = PartsFull.factory.createParts(
 //                new int[]{-1, -2, 3, 6, -4, 7, -9, 12, 5, -2, 1, 2, 0, 3, 4, 16, 0, 0, 8},
 //                3);
