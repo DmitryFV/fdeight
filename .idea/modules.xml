@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/modules/miscellaneous/miscellaneous.iml" filepath="$PROJECT_DIR$/modules/miscellaneous/miscellaneous.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/mvcsimple/mvcsimple.iml" filepath="$PROJECT_DIR$/modules/mvcsimple/mvcsimple.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/sport/sport.iml" filepath="$PROJECT_DIR$/modules/sport/sport.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/tictactoe/tictactoe.iml" filepath="$PROJECT_DIR$/modules/tictactoe/tictactoe.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/utils/utils.iml" filepath="$PROJECT_DIR$/modules/utils/utils.iml" />
     </modules>
