@@ -1,4 +1,4 @@
-package com.fdeight.sport.khl.process.parsers;
+package com.fdeight.sport.khl.parsers;
 
 import com.fdeight.sport.parsers.TxtParser;
 

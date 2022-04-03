@@ -1,6 +1,6 @@
 package com.fdeight.sport.khl.process;
 
-import com.fdeight.sport.khl.process.parsers.KHLRBParser;
+import com.fdeight.sport.khl.parsers.KHLRBParser;
 import com.fdeight.sport.parsers.TxtParser;
 
 import java.io.File;
