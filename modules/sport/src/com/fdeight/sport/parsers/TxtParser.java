@@ -27,8 +27,9 @@ public abstract class TxtParser {
     private void parseFile(final File file) throws IOException, ParseException {
         try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
+            int lineNumber = 0;
             while ((line = reader.readLine()) != null) {
-                processLine(line);
+                processLine(lineNumber++, line);
             }
         }
     }
@@ -41,5 +42,5 @@ public abstract class TxtParser {
         System.out.println(String.format("Ended [%s]", file.getName()));
     }
 
-    protected abstract void processLine(final String line) throws ParseException;
+    protected abstract void processLine(final int lineNumber, final String line) throws ParseException;
 }

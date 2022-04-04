@@ -28,6 +28,11 @@ public class KHLMatchInfo {
     }
 
     public final Date date;
+    /**
+     * Вспомогательная переменная, помогающая задавать порядок для матчей с одинаковой датой.
+     * Напрмиер, может определяться как номер строки в файле.
+     */
+    public final int tag;
     public final Type type;
     public final String firstTeam;
     public final String secondTeam;
@@ -38,9 +43,11 @@ public class KHLMatchInfo {
      */
     public final Score[] scorePeriods;
 
-    public KHLMatchInfo(final Date date, final Type type, final String firstTeam, final String secondTeam,
+    public KHLMatchInfo(final Date date, final int tag, final Type type,
+                        final String firstTeam, final String secondTeam,
                         final Score score, final Score[] scorePeriods) {
         this.date = date;
+        this.tag = tag;
         this.type = type;
         this.firstTeam = firstTeam;
         this.secondTeam = secondTeam;

@@ -15,7 +15,8 @@ public class KHLProcessor {
         final TxtParser parser = new KHLRBParser(storage);
         final File file = new File("txt_rb_v03");
         parser.parse(file);
-        System.out.println(String.format("Storage size = %d", storage.storage.size()));
+        storage.sort();
+        System.out.println(String.format("Storage size = %d", storage.size()));
         System.out.println(String.format("Done %s", KHLProcessor.class.getSimpleName()));
     }
 }

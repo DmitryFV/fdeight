@@ -55,7 +55,7 @@ public class KHLRBParser extends TxtParser {
     }
 
     @Override
-    protected void processLine(final String line) throws ParseException {
+    protected void processLine(final int lineNumber, final String line) throws ParseException {
         System.out.println(line);
         for (final ParseType parseType : ParseType.values()) {
             final Matcher typeMatcher = parseType.pattern.matcher(line);
@@ -84,7 +84,7 @@ public class KHLRBParser extends TxtParser {
         for (int i = 0; i < scorePeriodsLength; i++) {
             scorePeriods[i] = createScore(matcher.group(6 + i * 2), matcher.group(7 + i * 2));
         }
-        final KHLMatchInfo info = new KHLMatchInfo(date, type, matcher.group(2), matcher.group(3),
+        final KHLMatchInfo info = new KHLMatchInfo(date, lineNumber, type, matcher.group(2), matcher.group(3),
                 score, scorePeriods);
         storage.add(info);
     }
