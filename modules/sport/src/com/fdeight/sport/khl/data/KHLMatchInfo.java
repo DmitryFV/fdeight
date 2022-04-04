@@ -2,8 +2,16 @@ package com.fdeight.sport.khl.data;
 
 import com.fdeight.sport.utils.Utils;
 
+import java.util.Arrays;
 import java.util.Date;
 
+/**
+ * Информация о матче.
+ * Почти immutable объект.
+ * Потенциально слабое место (не immutable в теории) - массив счета по перодам.
+ * Массив сделан private, чтобы уменьшить риски здесь.
+ * Делать unmodifiable list вместо массива представляется излишним.
+ */
 public class KHLMatchInfo {
     public enum Type {
         UNDEFINED,
@@ -12,6 +20,15 @@ public class KHLMatchInfo {
         SEMIFINAL,
         QUARTERFINAL,
         EIGHTFINAL,
+        //
+    }
+
+    public enum Periods {
+        PERIOD1,
+        PERIOD2,
+        PERIOD3,
+        OVERTIME,
+        SHOOTOUTS,
         //
     }
 
@@ -41,7 +58,7 @@ public class KHLMatchInfo {
      * Счет по периодам.
      * Длина массива равна от 3 до 5: 3 периода, овертайм (все овертаймы вместе), буллиты.
      */
-    public final Score[] scorePeriods;
+    private final Score[] scorePeriods;
 
     public KHLMatchInfo(final Date date, final int tag, final Type type,
                         final String firstTeam, final String secondTeam,
@@ -52,7 +69,7 @@ public class KHLMatchInfo {
         this.firstTeam = firstTeam;
         this.secondTeam = secondTeam;
         this.score = score;
-        this.scorePeriods = scorePeriods;
+        this.scorePeriods = Arrays.copyOf(scorePeriods, scorePeriods.length);
         checkCorrectness();
     }
 
@@ -65,23 +82,23 @@ public class KHLMatchInfo {
         }
         Utils.checkEquals(score.first, first, () -> "First");
         Utils.checkEquals(score.second, second, () -> "Second");
-        if (scorePeriods.length == 3) {
+        if (scorePeriods.length == Periods.PERIOD3.ordinal() + 1) {
             Utils.checkNotEquals(score.first, score.second, () -> "First and second without overtime");
         } else {
             final int difference = Math.abs(score.first - score.second);
-            if (scorePeriods.length == 4) {
+            if (scorePeriods.length == Periods.OVERTIME.ordinal() + 1) {
                 Utils.checkEquals(difference, 1, () -> "Difference with overtime");
-                Utils.checkEquals(scorePeriods[3].first + scorePeriods[3].second, 1,
-                        () -> "Overtime without shootouts, first + second");
-            } else if (scorePeriods.length == 5) {
+                Utils.checkEquals(scorePeriods[Periods.OVERTIME.ordinal()].first + scorePeriods[3].second,
+                        1, () -> "Overtime without shootouts, first + second");
+            } else if (scorePeriods.length == Periods.SHOOTOUTS.ordinal() + 1) {
                 if (type != Type.REGULAR) {
                     throw new IllegalStateException(String.format("Shootouts, but type = %s", type));
                 }
                 Utils.checkEquals(difference, 1, () -> "Difference with shootouts");
-                Utils.checkEquals(scorePeriods[3].first + scorePeriods[3].second, 0,
-                        () -> "Overtime with shootouts, first + second");
-                Utils.checkEquals(scorePeriods[4].first + scorePeriods[4].second, 1,
-                        () -> "Shootouts, first + second");
+                Utils.checkEquals(scorePeriods[Periods.OVERTIME.ordinal()].first + scorePeriods[3].second,
+                        0, () -> "Overtime with shootouts, first + second");
+                Utils.checkEquals(scorePeriods[Periods.SHOOTOUTS.ordinal()].first + scorePeriods[4].second,
+                        1, () -> "Shootouts, first + second");
             }
         }
     }
