@@ -30,7 +30,7 @@ public class KHLStorage {
      *
      * @return подмножество записей из хранилища.
      */
-    public KHLStorage getFiltredByDateSubList(final Date min, final Date max) {
+    public KHLStorage getFiltredByDateSubStorage(final Date min, final Date max) {
         final KHLStorage subStorage = new KHLStorage();
         for (final KHLMatchInfo info : storage) {
             if (info.date.before(min)) continue;
