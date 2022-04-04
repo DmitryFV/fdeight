@@ -12,12 +12,9 @@ public class KHLProcessor {
     public static void main(final String[] args) throws IOException, ParseException {
         System.out.println(String.format("Start %s", KHLProcessor.class.getSimpleName()));
         final KHLStorage storage = new KHLStorage();
-        File file;
         final TxtParser parser = new KHLRBParser(storage);
-        file = new File("txt_rb_v03/Результаты хоккея 2014-2015.txt");
-        parser.parseFile(file);
-        file = new File("txt_rb_v03/Результаты хоккея 2015-2016.txt");
-        parser.parseFile(file);
+        final File file = new File("txt_rb_v03");
+        parser.parse(file);
         System.out.println(String.format("Storage size = %d", storage.storage.size()));
         System.out.println(String.format("Done %s", KHLProcessor.class.getSimpleName()));
     }
