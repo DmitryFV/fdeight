@@ -24,7 +24,7 @@ public class KHLRBParser extends TxtParser {
                             + MATCH_LINE_ADDITIONAL_PERIOD + "\\)"),
     };
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
 
     public enum ParseType {
         UNDEFINED(KHLMatchInfo.Type.UNDEFINED, Pattern.compile("UNDEFINED")),
@@ -78,7 +78,7 @@ public class KHLRBParser extends TxtParser {
             return;
         }
         Utils.checkInterval(scorePeriodsLength, 3, 5, () -> "Score periods length");
-        final Date date = DATE_FORMAT.parse(matcher.group(1));
+        final Date date = dateFormat.parse(matcher.group(1));
         final KHLMatchInfo.Score score = createScore(matcher.group(4), matcher.group(5));
         final KHLMatchInfo.Score[] scorePeriods = new KHLMatchInfo.Score[scorePeriodsLength];
         for (int i = 0; i < scorePeriodsLength; i++) {
