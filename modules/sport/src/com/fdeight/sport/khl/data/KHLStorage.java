@@ -22,4 +22,21 @@ public class KHLStorage {
     public void sort() {
         storage.sort(COMPARATOR);
     }
+
+    /**
+     * Возвращает подмножество записей из хранилища, отфильтрованных по дате,
+     * в диапазоне от минимального до максимального значений включительно.
+     * Сортировка сохраняется согласно текущей сортировке хранилища.
+     *
+     * @return подмножество записей из хранилища.
+     */
+    public KHLStorage getFiltredByDateSubList(final Date min, final Date max) {
+        final KHLStorage subStorage = new KHLStorage();
+        for (final KHLMatchInfo info : storage) {
+            if (info.date.before(min)) continue;
+            if (info.date.after(max)) continue;
+            subStorage.add(info);
+        }
+        return subStorage;
+    }
 }
