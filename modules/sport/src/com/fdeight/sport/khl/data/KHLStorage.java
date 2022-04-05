@@ -23,6 +23,10 @@ public class KHLStorage {
         storage.sort(COMPARATOR);
     }
 
+    public List<KHLMatchInfo> getUnmodifiableList() {
+        return Collections.unmodifiableList(storage);
+    }
+
     /**
      * Возвращает подмножество записей из хранилища, отфильтрованных по дате,
      * в диапазоне от минимального до максимального значений включительно.

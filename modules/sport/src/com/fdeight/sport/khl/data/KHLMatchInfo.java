@@ -32,6 +32,10 @@ public class KHLMatchInfo {
         //
     }
 
+    public static final int PLAIN_PERIODS_COUNT = Periods.PERIOD3.ordinal() + 1;
+    public static final int WITH_OVERTIME_PERIODS_COUNT = Periods.OVERTIME.ordinal() + 1;
+    public static final int WITH_SHOOTOUTS_PERIODS_COUNT = Periods.SHOOTOUTS.ordinal() + 1;
+
     public static class Score {
         public final int first;
         public final int second;
@@ -56,7 +60,8 @@ public class KHLMatchInfo {
     public final Score score;
     /**
      * Счет по периодам.
-     * Длина массива равна от 3 до 5: 3 периода, овертайм (все овертаймы вместе), буллиты.
+     * Длина массива равна от 3 ({@link KHLMatchInfo#PLAIN_PERIODS_COUNT})
+     * до 5 ({@link KHLMatchInfo#WITH_SHOOTOUTS_PERIODS_COUNT}): 3 периода, овертайм (все овертаймы вместе), буллиты.
      */
     private final Score[] scorePeriods;
 
@@ -82,15 +87,17 @@ public class KHLMatchInfo {
         }
         Utils.checkEquals(score.first, first, () -> "First");
         Utils.checkEquals(score.second, second, () -> "Second");
-        if (scorePeriods.length == Periods.PERIOD3.ordinal() + 1) {
+        Utils.checkInterval(scorePeriods.length, PLAIN_PERIODS_COUNT, WITH_SHOOTOUTS_PERIODS_COUNT,
+                () -> "scorePeriods.length");
+        if (scorePeriods.length == PLAIN_PERIODS_COUNT) {
             Utils.checkNotEquals(score.first, score.second, () -> "First and second without overtime");
         } else {
             final int difference = Math.abs(score.first - score.second);
-            if (scorePeriods.length == Periods.OVERTIME.ordinal() + 1) {
+            if (scorePeriods.length == WITH_OVERTIME_PERIODS_COUNT) {
                 Utils.checkEquals(difference, 1, () -> "Difference with overtime");
                 Utils.checkEquals(scorePeriods[Periods.OVERTIME.ordinal()].first + scorePeriods[3].second,
                         1, () -> "Overtime without shootouts, first + second");
-            } else if (scorePeriods.length == Periods.SHOOTOUTS.ordinal() + 1) {
+            } else if (scorePeriods.length == WITH_SHOOTOUTS_PERIODS_COUNT) {
                 if (type != Type.REGULAR) {
                     throw new IllegalStateException(String.format("Shootouts, but type = %s", type));
                 }
@@ -99,6 +106,8 @@ public class KHLMatchInfo {
                         0, () -> "Overtime with shootouts, first + second");
                 Utils.checkEquals(scorePeriods[Periods.SHOOTOUTS.ordinal()].first + scorePeriods[4].second,
                         1, () -> "Shootouts, first + second");
+            } else {
+                throw new IllegalStateException(String.format("Illegal scorePeriods.length (%d)", scorePeriods.length));
             }
         }
     }
