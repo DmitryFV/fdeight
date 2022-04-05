@@ -22,7 +22,7 @@ public class KHLProcessor {
         System.out.println(String.format("Storage size = %d", khlStorage.size()));
         final Date min = new GregorianCalendar(2016, Calendar.OCTOBER, 1).getTime();
         final Date max = new GregorianCalendar(2016, Calendar.OCTOBER, 5).getTime();
-        final KHLStorage subStorage = khlStorage.getFiltredByDateSubStorage(min, max);
+        final KHLStorage subStorage = khlStorage.getSubStorageFiltredByDate(min, max);
         System.out.println(String.format("Sub storage size = %d", subStorage.size()));
         System.out.println(String.format("Done %s", KHLProcessor.class.getSimpleName()));
     }
