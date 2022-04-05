@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class KHLSolver {
-    public static class SolverScore {
+    private static class SolverScore {
         public int count;
         public int first;
         public int second;
@@ -20,7 +20,7 @@ public class KHLSolver {
         }
     }
 
-    public static class Stats {
+    private static class Stats {
         /**
          * {@link SolverScore#first} здесь - набраные очки hero team, она хозяин площадки, ее очки первые.
          */
