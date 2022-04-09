@@ -43,4 +43,23 @@ public class KHLStorage {
         }
         return subStorage;
     }
+
+    /**
+     * Возвращает хранилище информации о матчах, по которым будет запрос (на прогноз результатов).
+     * Это будет подмножество записей из текущего хранилища, но для получаемого хранилища
+     * в этих записях не будет данных о счете.
+     *
+     * @return хранилище записей, по которым будет запрос.
+     */
+    public KHLStorage getQueryStorageFiltredByDate(final Date min, final Date max) {
+        final KHLStorage subStorage = new KHLStorage();
+        for (final KHLMatchInfo info : storage) {
+            if (info.date.before(min)) continue;
+            if (info.date.after(max)) continue;
+            final KHLMatchInfo queryInfo = new KHLMatchInfo(info.date, info.tag, info.type,
+                    info.firstTeam, info.secondTeam);
+            subStorage.add(queryInfo);
+        }
+        return subStorage;
+    }
 }

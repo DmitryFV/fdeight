@@ -25,7 +25,11 @@ public class KHLProcessor {
         final Date max = new GregorianCalendar(2016, Calendar.OCTOBER, 5).getTime();
         final KHLStorage subStorage = khlStorage.getSubStorageFiltredByDate(min, max);
         System.out.println(String.format("Sub storage size = %d", subStorage.size()));
-        final KHLSolver solver = new KHLSolver(subStorage, null);
+        final Date queryMin = new GregorianCalendar(2016, Calendar.OCTOBER, 6).getTime();
+        final Date queryMax = new GregorianCalendar(2016, Calendar.OCTOBER, 6).getTime();
+        final KHLStorage queryStorage = khlStorage.getQueryStorageFiltredByDate(queryMin, queryMax);
+        System.out.println(String.format("Query storage size = %d", queryStorage.size()));
+        final KHLSolver solver = new KHLSolver(subStorage, queryStorage);
         solver.solve();
         System.out.println(String.format("Done %s", KHLProcessor.class.getSimpleName()));
     }

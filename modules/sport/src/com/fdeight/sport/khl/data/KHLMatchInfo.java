@@ -75,6 +75,17 @@ public class KHLMatchInfo {
         checkCorrectness();
     }
 
+    public KHLMatchInfo(final Date date, final int tag, final Type type,
+                        final String firstTeam, final String secondTeam) {
+        this.date = date;
+        this.tag = tag;
+        this.type = type;
+        this.firstTeam = firstTeam;
+        this.secondTeam = secondTeam;
+        this.score = null;
+        this.scorePeriods = null;
+    }
+
     private void checkCorrectness() {
         int first = 0;
         int second = 0;

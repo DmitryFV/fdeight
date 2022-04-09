@@ -110,11 +110,29 @@ public class KHLSolver {
         this.queryStorage = queryStorage;
         resultStorage = new KHLStorage();
         teamsStats = new TreeMap<>();
+        checkHonest();
+    }
+
+    /**
+     * Проверить, что запрос честный, т.е. вся информация о начальных даннных находится
+     * в прошлом относительно каждой записи из запроса.
+     */
+    private void checkHonest() {
+        final List<KHLMatchInfo> queryList = queryStorage.getUnmodifiableList();
+        final List<KHLMatchInfo> initList = initStorage.getUnmodifiableList();
+        for (final KHLMatchInfo queryInfo : queryList) {
+            for (final KHLMatchInfo initInfo : initList) {
+                if (initInfo.date.getTime() >= queryInfo.date.getTime()) {
+                    throw new IllegalStateException(String.format("Init date (%s) >= query date (%s)",
+                            initInfo.date, queryInfo.date));
+                }
+            }
+        }
     }
 
     public void solve() {
-        final List<KHLMatchInfo> list = initStorage.getUnmodifiableList();
-        for (final KHLMatchInfo info : list) {
+        final List<KHLMatchInfo> initList = initStorage.getUnmodifiableList();
+        for (final KHLMatchInfo info : initList) {
             final Stats hostStats = teamsStats.computeIfAbsent(info.firstTeam, key -> new Stats());
             hostStats.hostScore.add(info.score);
             for (int i = 0; i < info.scorePeriods.size(); i++) {
