@@ -24,4 +24,8 @@ public class Utils {
         throw new IllegalStateException(String.format("%s: %d is not in [%d,%d]",
                 labelSupplier.get(), value, min, max));
     }
+
+    public static void impossibleIllegalState() {
+        throw new IllegalStateException("Impossible illegal state");
+    }
 }
