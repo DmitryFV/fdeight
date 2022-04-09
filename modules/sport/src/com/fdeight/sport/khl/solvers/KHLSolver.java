@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 public class KHLSolver {
-    private static class SolverScore {
+    private static class StatScore {
         public int count;
         public int first;
         public int second;
@@ -23,7 +23,7 @@ public class KHLSolver {
 
         public Average computeAverage() {
             Utils.checkNotEquals(count, 0, () -> String.format("%s.computeAverage(), count",
-                    SolverScore.class.getSimpleName()));
+                    StatScore.class.getSimpleName()));
             return new Average(first / (double) count, second / (double) count);
         }
     }
@@ -56,24 +56,24 @@ public class KHLSolver {
 
     private static class Stats {
         /**
-         * {@link SolverScore#first} здесь - набраные очки hero team, она хозяин площадки, ее очки первые.
+         * {@link StatScore#first} здесь - набраный счет (голы) hero team, она хозяин площадки, ее голы первые.
          */
-        public final SolverScore hostScore;
+        public final StatScore hostScore;
         /**
-         * {@link SolverScore#second} здесь - набраные очки hero team, она играет в гостях, ее очки вторые.
+         * {@link StatScore#second} здесь - набраные счет (голы) hero team, она играет в гостях, ее голы вторые.
          */
-        public final SolverScore guestScore;
+        public final StatScore guestScore;
         /**
          * Счет по периодам, аналогично {@link #hostScore}.
          * Длина массива равна 5: 3 периода, овертайм (все овертаймы вместе), буллиты.
          */
-        private final SolverScore[] hostScorePeriods;
+        private final StatScore[] hostScorePeriods;
         /**
          * Счет по периодам, аналогично {@link #guestScore}.
          * Длина массива равна 5 ({@link KHLMatchInfo#WITH_SHOOTOUTS_PERIODS_COUNT}):
          * 3 периода, овертайм (все овертаймы вместе), буллиты.
          */
-        private final SolverScore[] guestScorePeriods;
+        private final StatScore[] guestScorePeriods;
         /**
          * Победы на своей площадке.
          */
@@ -92,8 +92,8 @@ public class KHLSolver {
         private final Stat guestDraws;
 
         public Stats() {
-            this.hostScore = new SolverScore();
-            this.guestScore = new SolverScore();
+            this.hostScore = new StatScore();
+            this.guestScore = new StatScore();
             hostScorePeriods = createScorePeriods();
             guestScorePeriods = createScorePeriods();
             hostWins = new Stat();
@@ -102,11 +102,11 @@ public class KHLSolver {
             guestDraws = new Stat();
         }
 
-        private SolverScore[] createScorePeriods() {
-            final SolverScore[] scorePeriods;
-            scorePeriods = new SolverScore[KHLMatchInfo.WITH_SHOOTOUTS_PERIODS_COUNT];
+        private StatScore[] createScorePeriods() {
+            final StatScore[] scorePeriods;
+            scorePeriods = new StatScore[KHLMatchInfo.WITH_SHOOTOUTS_PERIODS_COUNT];
             for (int i = 0; i < scorePeriods.length; i++) {
-                scorePeriods[i] = new SolverScore();
+                scorePeriods[i] = new StatScore();
             }
             return scorePeriods;
         }
