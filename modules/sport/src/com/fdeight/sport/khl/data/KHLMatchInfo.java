@@ -2,15 +2,12 @@ package com.fdeight.sport.khl.data;
 
 import com.fdeight.sport.utils.Utils;
 
-import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Информация о матче.
- * Почти immutable объект.
- * Потенциально слабое место (не immutable в теории) - массив счета по периодам.
- * Массив сделан private, чтобы уменьшить риски здесь.
- * Делать unmodifiable list вместо массива представляется излишним.
+ * Immutable объект.
  */
 public class KHLMatchInfo {
     public enum Type {
@@ -59,11 +56,11 @@ public class KHLMatchInfo {
     public final String secondTeam;
     public final Score score;
     /**
-     * Счет по периодам.
-     * Длина массива равна от 3 ({@link KHLMatchInfo#PLAIN_PERIODS_COUNT})
+     * Счет по периодам. Unmodifiable list.
+     * Количество элементов от 3 ({@link KHLMatchInfo#PLAIN_PERIODS_COUNT})
      * до 5 ({@link KHLMatchInfo#WITH_SHOOTOUTS_PERIODS_COUNT}): 3 периода, овертайм (все овертаймы вместе), буллиты.
      */
-    private final Score[] scorePeriods;
+    public final List<Score> scorePeriods;
 
     public KHLMatchInfo(final Date date, final int tag, final Type type,
                         final String firstTeam, final String secondTeam,
@@ -74,7 +71,7 @@ public class KHLMatchInfo {
         this.firstTeam = firstTeam;
         this.secondTeam = secondTeam;
         this.score = score;
-        this.scorePeriods = Arrays.copyOf(scorePeriods, scorePeriods.length);
+        this.scorePeriods = List.of(scorePeriods);
         checkCorrectness();
     }
 
@@ -87,27 +84,30 @@ public class KHLMatchInfo {
         }
         Utils.checkEquals(score.first, first, () -> "First");
         Utils.checkEquals(score.second, second, () -> "Second");
-        Utils.checkInterval(scorePeriods.length, PLAIN_PERIODS_COUNT, WITH_SHOOTOUTS_PERIODS_COUNT,
-                () -> "scorePeriods.length");
-        if (scorePeriods.length == PLAIN_PERIODS_COUNT) {
+        Utils.checkInterval(scorePeriods.size(), PLAIN_PERIODS_COUNT, WITH_SHOOTOUTS_PERIODS_COUNT,
+                () -> "scorePeriods.size()");
+        if (scorePeriods.size() == PLAIN_PERIODS_COUNT) {
             Utils.checkNotEquals(score.first, score.second, () -> "First and second without overtime");
         } else {
             final int difference = Math.abs(score.first - score.second);
-            if (scorePeriods.length == WITH_OVERTIME_PERIODS_COUNT) {
+            if (scorePeriods.size() == WITH_OVERTIME_PERIODS_COUNT) {
                 Utils.checkEquals(difference, 1, () -> "Difference with overtime");
-                Utils.checkEquals(scorePeriods[Periods.OVERTIME.ordinal()].first + scorePeriods[3].second,
+                Utils.checkEquals(scorePeriods.get(Periods.OVERTIME.ordinal()).first
+                                + scorePeriods.get(Periods.OVERTIME.ordinal()).second,
                         1, () -> "Overtime without shootouts, first + second");
-            } else if (scorePeriods.length == WITH_SHOOTOUTS_PERIODS_COUNT) {
+            } else if (scorePeriods.size() == WITH_SHOOTOUTS_PERIODS_COUNT) {
                 if (type != Type.REGULAR) {
                     throw new IllegalStateException(String.format("Shootouts, but type = %s", type));
                 }
                 Utils.checkEquals(difference, 1, () -> "Difference with shootouts");
-                Utils.checkEquals(scorePeriods[Periods.OVERTIME.ordinal()].first + scorePeriods[3].second,
+                Utils.checkEquals(scorePeriods.get(Periods.OVERTIME.ordinal()).first
+                                + scorePeriods.get(Periods.OVERTIME.ordinal()).second,
                         0, () -> "Overtime with shootouts, first + second");
-                Utils.checkEquals(scorePeriods[Periods.SHOOTOUTS.ordinal()].first + scorePeriods[4].second,
+                Utils.checkEquals(scorePeriods.get(Periods.SHOOTOUTS.ordinal()).first
+                                + scorePeriods.get(Periods.SHOOTOUTS.ordinal()).second,
                         1, () -> "Shootouts, first + second");
             } else {
-                throw new IllegalStateException(String.format("Illegal scorePeriods.length (%d)", scorePeriods.length));
+                throw new IllegalStateException(String.format("Illegal scorePeriods.size() (%d)", scorePeriods.size()));
             }
         }
     }

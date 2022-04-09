@@ -2,6 +2,7 @@ package com.fdeight.sport.khl.process;
 
 import com.fdeight.sport.khl.parsers.KHLRBParser;
 import com.fdeight.sport.khl.data.KHLStorage;
+import com.fdeight.sport.khl.solvers.KHLSolver;
 import com.fdeight.sport.parsers.TxtParser;
 
 import java.io.File;
@@ -24,6 +25,8 @@ public class KHLProcessor {
         final Date max = new GregorianCalendar(2016, Calendar.OCTOBER, 5).getTime();
         final KHLStorage subStorage = khlStorage.getSubStorageFiltredByDate(min, max);
         System.out.println(String.format("Sub storage size = %d", subStorage.size()));
+        final KHLSolver solver = new KHLSolver(subStorage, null);
+        solver.solve();
         System.out.println(String.format("Done %s", KHLProcessor.class.getSimpleName()));
     }
 }

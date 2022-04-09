@@ -13,10 +13,10 @@ public class KHLSolver {
         public int first;
         public int second;
 
-        public void add(final int toFirst, final int toSecond) {
+        public void add(final KHLMatchInfo.Score score) {
             count++;
-            first += toFirst;
-            second += toSecond;
+            first += score.first;
+            second += score.second;
         }
     }
 
@@ -84,7 +84,16 @@ public class KHLSolver {
     public void solve() {
         final List<KHLMatchInfo> list = initStorage.getUnmodifiableList();
         for (final KHLMatchInfo info : list) {
-
+            final Stats hostStats = teamsStats.computeIfAbsent(info.firstTeam, key -> new Stats());
+            hostStats.hostScore.add(info.score);
+            for (int i = 0; i < info.scorePeriods.size(); i++) {
+                hostStats.hostScorePeriods[i].add(info.scorePeriods.get(i));
+            }
+            final Stats guestStats = teamsStats.computeIfAbsent(info.secondTeam, key -> new Stats());
+            guestStats.guestScore.add(info.score);
+            for (int i = 0; i < info.scorePeriods.size(); i++) {
+                guestStats.guestScorePeriods[i].add(info.scorePeriods.get(i));
+            }
         }
     }
 }
