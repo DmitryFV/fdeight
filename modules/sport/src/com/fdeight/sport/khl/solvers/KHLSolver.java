@@ -6,6 +6,7 @@ import com.fdeight.sport.utils.Utils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 public class KHLSolver {
@@ -19,6 +20,22 @@ public class KHLSolver {
             first += score.first;
             second += score.second;
         }
+
+        public Average computeAverage() {
+            Utils.checkNotEquals(count, 0, () -> String.format("%s.computeAverage(), count",
+                    SolverScore.class.getSimpleName()));
+            return new Average(first / (double) count, second / (double) count);
+        }
+    }
+
+    private static class Average {
+        public final double first;
+        public final double second;
+
+        public Average(final double first, final double second) {
+            this.first = first;
+            this.second = second;
+        }
     }
 
     private static class Stat {
@@ -28,6 +45,12 @@ public class KHLSolver {
         public void add(final int value) {
             count++;
             this.value += value;
+        }
+
+        public double computeAverage() {
+            Utils.checkNotEquals(count, 0, () -> String.format("%s.computeAverage(), count",
+                    Stat.class.getSimpleName()));
+            return value / (double) count;
         }
     }
 
@@ -89,6 +112,11 @@ public class KHLSolver {
         }
     }
 
+    private static class Settings {
+        public final double deltaHostScore = 0.1;
+        public final double deltaGuestScore = 0.1;
+    }
+
     /**
      * Хранилище информации о матчах, которые являются начальными даннными, по которым собираем статистику, обучаемся.
      */
@@ -105,11 +133,14 @@ public class KHLSolver {
 
     private final Map<String, Stats> teamsStats;
 
+    private final Settings settings;
+
     public KHLSolver(final KHLStorage initStorage, final KHLStorage queryStorage) {
         this.initStorage = initStorage;
         this.queryStorage = queryStorage;
         resultStorage = new KHLStorage();
         teamsStats = new TreeMap<>();
+        settings = new Settings();
         checkHonest();
     }
 
@@ -131,6 +162,11 @@ public class KHLSolver {
     }
 
     public void solve() {
+        computeTeamStats();
+        computeResult();
+    }
+
+    private void computeTeamStats() {
         final List<KHLMatchInfo> initList = initStorage.getUnmodifiableList();
         for (final KHLMatchInfo info : initList) {
             final Stats hostStats = teamsStats.computeIfAbsent(info.firstTeam, key -> new Stats());
@@ -162,5 +198,66 @@ public class KHLSolver {
                 Utils.impossibleIllegalState();
             }
         }
+    }
+
+    @SuppressWarnings("DuplicateExpressions")
+    private void computeResult() {
+        Utils.checkEquals(resultStorage.size(), 0, () -> "resultStorage.size()");
+        final List<KHLMatchInfo> queryList = queryStorage.getUnmodifiableList();
+        for (final KHLMatchInfo info : queryList) {
+            final Stats hostStats = teamsStats.get(info.firstTeam);
+            Objects.requireNonNull(hostStats, "hostStats undefined");
+            final Stats guestStats = teamsStats.computeIfAbsent(info.secondTeam, key -> new Stats());
+            Objects.requireNonNull(guestStats, "guestStats undefined");
+            final Average hostScoreAverage = hostStats.hostScore.computeAverage();
+            final Average guestScoreAverage = hostStats.guestScore.computeAverage();
+            final double hostWinsAverage = hostStats.hostWins.computeAverage();
+            final double guestWinsAverage = guestStats.guestWins.computeAverage();
+            final double hostDrawsAverage = hostStats.hostDraws.computeAverage();
+            final double guestDrawsAverage = guestStats.guestDraws.computeAverage();
+            if (hostScoreAverage.first > hostScoreAverage.second + settings.deltaHostScore) {
+                // Хозяева обычно забивают больше гостей.
+                if (guestScoreAverage.second > guestScoreAverage.first + settings.deltaGuestScore) {
+                    // Гости обычно забивают больше хозяев.
+                    // Сложный случай по счету.
+                } else if (guestScoreAverage.second + settings.deltaGuestScore < guestScoreAverage.first) {
+                    // Гости обычно забивают меньше хозяев.
+                    // Простой случай по счету.
+                } else {
+                    // Гости обычно забивают примерно столько же, что и хозяева.
+                    // Средний по сложности случай по счету.
+                }
+            } else if (hostScoreAverage.first + settings.deltaHostScore < hostScoreAverage.second) {
+                // Хозяева обычно забивают меньше гостей.
+                if (guestScoreAverage.second > guestScoreAverage.first + settings.deltaGuestScore) {
+                    // Гости обычно забивают больше хозяев.
+                    // Простой случай по счету.
+                } else if (guestScoreAverage.second + settings.deltaGuestScore < guestScoreAverage.first) {
+                    // Гости обычно забивают меньше хозяев.
+                    // Сложный случай по счету.
+                } else {
+                    // Гости обычно забивают примерно столько же, что и хозяева.
+                    // Средний по сложности случай по счету.
+                }
+            } else {
+                // Хозяева обычно забивают примерно столько же, что и гости.
+                if (guestScoreAverage.second > guestScoreAverage.first + settings.deltaGuestScore) {
+                    // Гости обычно забивают больше хозяев.
+                    // Средний по сложности случай по счету.
+                } else if (guestScoreAverage.second + settings.deltaGuestScore < guestScoreAverage.first) {
+                    // Гости обычно забивают меньше хозяев.
+                    // Средний по сложности случай по счету.
+                } else {
+                    // Гости обычно забивают примерно столько же, что и хозяева.
+                    // Простой случай по счету.
+                }
+            }
+            final KHLMatchInfo resultInfo = info;
+            resultStorage.add(resultInfo);
+        }
+    }
+
+    public List<KHLMatchInfo> getResultList() {
+        return resultStorage.getUnmodifiableList();
     }
 }
