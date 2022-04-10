@@ -119,6 +119,14 @@ public class KHLSolver02 {
         public final double deltaHostDraws = 0.02;
         public final double deltaGuestDraws = 0.02;
         public final double deltaScore = 1;
+        public final double deltaWins = 0.05;
+    }
+
+    private enum Variants {
+        VARIANT0,
+        VARIANT1,
+        VARIANT2,
+        //
     }
 
     /**
@@ -221,7 +229,7 @@ public class KHLSolver02 {
             guestStats.guestWins.add(1);
             totalStats.guestWins.add(1);
         } else {
-            Utils.impossibleIllegalState();
+            Utils.impossibleIllegalState("addWins");
         }
     }
 
@@ -238,11 +246,10 @@ public class KHLSolver02 {
             guestStats.guestDraws.add(0);
             totalStats.guestDraws.add(0);
         } else {
-            Utils.impossibleIllegalState();
+            Utils.impossibleIllegalState("addDraws");
         }
     }
 
-    @SuppressWarnings("DuplicateExpressions")
     private void computeResult() {
         checkBeforeComputeResult();
         final Stats totalStats = teamStats.get(TOTAL);
@@ -264,289 +271,282 @@ public class KHLSolver02 {
             final double guestDrawsAverage = guestStats.guestDraws.computeAverage();
             final int first = Utils.round(hostScoreAverage.first);
             final int second = Utils.round(guestScoreAverage.second);
+
+            // Хозяева в среднем забивают против своих гостей.
+            // VARIANT1 - хозяева больше, VARIANT1 - хозяева меньше, VARIANT2 - хозяева забивают столько же.
+            final Variants hostScoreAverageFirstVSHostScoreAverageSecondLevel0;
+            if (hostScoreAverage.first > hostScoreAverage.second + settings.deltaHostScore) {
+                hostScoreAverageFirstVSHostScoreAverageSecondLevel0 = Variants.VARIANT0;
+            } else if (hostScoreAverage.first + settings.deltaHostScore < hostScoreAverage.second) {
+                hostScoreAverageFirstVSHostScoreAverageSecondLevel0 = Variants.VARIANT1;
+            } else {
+                hostScoreAverageFirstVSHostScoreAverageSecondLevel0 = Variants.VARIANT2;
+            }
+
+            // Гости в среднем забивают против своих хозяев.
+            // VARIANT1 - гости больше, VARIANT1 - гости меньше, VARIANT2 - гости забивают столько же.
+            final Variants guestScoreAverageSecondVSGuestScoreAverageFirstLevel1;
+            if (guestScoreAverage.second > guestScoreAverage.first + settings.deltaGuestScore) {
+                guestScoreAverageSecondVSGuestScoreAverageFirstLevel1 = Variants.VARIANT0;
+            } else if (guestScoreAverage.second + settings.deltaGuestScore < guestScoreAverage.first) {
+                guestScoreAverageSecondVSGuestScoreAverageFirstLevel1 = Variants.VARIANT1;
+            } else {
+                guestScoreAverageSecondVSGuestScoreAverageFirstLevel1 = Variants.VARIANT2;
+            }
+
+            // Хозяева в среднем выигрывают против total хозяев.
+            // VARIANT1 - хозяева чаще total, VARIANT1 - хозяева реже total, VARIANT2 - столько же.
+            final Variants hostWinsAverageVSTotalHostWinsAverageLevel2;
+            if (hostWinsAverage > totalHostWinsAverage + settings.deltaHostWins) {
+                hostWinsAverageVSTotalHostWinsAverageLevel2 = Variants.VARIANT0;
+            } else if (hostWinsAverage + settings.deltaHostWins < totalHostWinsAverage) {
+                hostWinsAverageVSTotalHostWinsAverageLevel2 = Variants.VARIANT1;
+            } else {
+                hostWinsAverageVSTotalHostWinsAverageLevel2 = Variants.VARIANT2;
+            }
+
+            // Гости в среднем выигрывают против total гостей.
+            // VARIANT1 - гости чаще total, VARIANT1 - гости реже total, VARIANT2 - столько же.
+            final Variants guestWinsAverageVSTotalGuestWinsAverageLevel3;
+            if (guestWinsAverage > totalGuestWinsAverage + settings.deltaGuestWins) {
+                guestWinsAverageVSTotalGuestWinsAverageLevel3 = Variants.VARIANT0;
+            } else if (guestWinsAverage + settings.deltaGuestWins < totalGuestWinsAverage) {
+                guestWinsAverageVSTotalGuestWinsAverageLevel3 = Variants.VARIANT1;
+            } else {
+                guestWinsAverageVSTotalGuestWinsAverageLevel3 = Variants.VARIANT2;
+            }
+
+            // Хозяева в среднем забивают против гости в среднем забивают.
+            // VARIANT1 - хозяева больше, VARIANT1 - хозяева меньше, VARIANT2 - столько же.
+            final Variants hostScoreAverageFirstVSGuestScoreAverageSecondLevel4;
+            if (hostScoreAverage.first > guestScoreAverage.second + settings.deltaScore || first > second + 1) {
+                hostScoreAverageFirstVSGuestScoreAverageSecondLevel4 = Variants.VARIANT0;
+            } else if (hostScoreAverage.first + settings.deltaScore < guestScoreAverage.second || first + 1 < second) {
+                hostScoreAverageFirstVSGuestScoreAverageSecondLevel4 = Variants.VARIANT1;
+            } else {
+                hostScoreAverageFirstVSGuestScoreAverageSecondLevel4 = Variants.VARIANT2;
+            }
+
+            // Хозяева в среднем играют вничью против total хозяев.
+            // VARIANT1 - хозяева чаще total, VARIANT1 - хозяева реже total, VARIANT2 - столько же.
+            final Variants hostDrawsAverageVSTotalHostDrawsAverageLevel5;
+            if (hostDrawsAverage > totalHostDrawsAverage + settings.deltaHostDraws) {
+                hostDrawsAverageVSTotalHostDrawsAverageLevel5 = Variants.VARIANT0;
+            } else if (hostDrawsAverage + settings.deltaHostDraws < totalHostDrawsAverage) {
+                hostDrawsAverageVSTotalHostDrawsAverageLevel5 = Variants.VARIANT1;
+            } else {
+                hostDrawsAverageVSTotalHostDrawsAverageLevel5 = Variants.VARIANT2;
+            }
+
+            // Гости в среднем играют вничью против total гостей.
+            // VARIANT1 - гости чаще total, VARIANT1 - гости реже total, VARIANT2 - столько же.
+            final Variants guestDrawsAverageVSTotalGuestDrawsAverageLevel6;
+            if (guestDrawsAverage > totalGuestDrawsAverage + settings.deltaGuestDraws) {
+                guestDrawsAverageVSTotalGuestDrawsAverageLevel6 = Variants.VARIANT0;
+            } else if (guestDrawsAverage + settings.deltaGuestDraws < totalGuestDrawsAverage) {
+                guestDrawsAverageVSTotalGuestDrawsAverageLevel6 = Variants.VARIANT1;
+            } else {
+                guestDrawsAverageVSTotalGuestDrawsAverageLevel6 = Variants.VARIANT2;
+            }
+
+            // Хозяева в среднем выигрывают против гости в среднем выигрывают.
+            // VARIANT1 - хозяева чаще, VARIANT1 - хозяева реже, VARIANT2 - столько же.
+            final Variants hostWinsAverageVSGuestWinsAverageLevel7;
+            if (hostWinsAverage > guestWinsAverage + settings.deltaWins) {
+                hostWinsAverageVSGuestWinsAverageLevel7 = Variants.VARIANT0;
+            } else if (hostWinsAverage + settings.deltaWins < guestWinsAverage) {
+                hostWinsAverageVSGuestWinsAverageLevel7 = Variants.VARIANT1;
+            } else {
+                hostWinsAverageVSGuestWinsAverageLevel7 = Variants.VARIANT2;
+            }
+
+            int hostWinInPeriods = 0;
+            int hostWinInOvertimeOrShootouts = 0;
+            int guestWinInPeriods = 0;
+            int guestWinInOvertimeOrShootouts = 0;
+
+            switch (hostScoreAverageFirstVSHostScoreAverageSecondLevel0) {
+                case VARIANT0:
+                    hostWinInPeriods++;
+                    hostWinInOvertimeOrShootouts++;
+                    break;
+                case VARIANT1:
+                    guestWinInPeriods++;
+                    guestWinInOvertimeOrShootouts++;
+                    break;
+                case VARIANT2:
+                    break;
+                default:
+                    Utils.impossibleIllegalState("hostScoreAverageFirstVSHostScoreAverageSecondLevel0");
+            }
+
+            switch (guestScoreAverageSecondVSGuestScoreAverageFirstLevel1) {
+                case VARIANT0:
+                    guestWinInPeriods++;
+                    guestWinInOvertimeOrShootouts++;
+                    break;
+                case VARIANT1:
+                    hostWinInPeriods++;
+                    hostWinInOvertimeOrShootouts++;
+                    break;
+                case VARIANT2:
+                    break;
+                default:
+                    Utils.impossibleIllegalState("hostScoreAverageFirstVSHostScoreAverageSecondLevel0");
+            }
+
+            switch (hostWinsAverageVSTotalHostWinsAverageLevel2) {
+                case VARIANT0:
+                    hostWinInPeriods++;
+                    hostWinInOvertimeOrShootouts++;
+                    break;
+                case VARIANT1:
+                    guestWinInPeriods++;
+                    guestWinInOvertimeOrShootouts++;
+                    break;
+                case VARIANT2:
+                    break;
+                default:
+                    Utils.impossibleIllegalState("hostScoreAverageFirstVSHostScoreAverageSecondLevel0");
+            }
+
+            switch (guestWinsAverageVSTotalGuestWinsAverageLevel3) {
+                case VARIANT0:
+                    guestWinInPeriods++;
+                    guestWinInOvertimeOrShootouts++;
+                    break;
+                case VARIANT1:
+                    hostWinInPeriods++;
+                    hostWinInOvertimeOrShootouts++;
+                    break;
+                case VARIANT2:
+                    break;
+                default:
+                    Utils.impossibleIllegalState("hostScoreAverageFirstVSHostScoreAverageSecondLevel0");
+            }
+
+            switch (hostScoreAverageFirstVSGuestScoreAverageSecondLevel4) {
+                case VARIANT0:
+                    hostWinInPeriods++;
+                    hostWinInOvertimeOrShootouts++;
+                    break;
+                case VARIANT1:
+                    guestWinInPeriods++;
+                    guestWinInOvertimeOrShootouts++;
+                    break;
+                case VARIANT2:
+                    break;
+                default:
+                    Utils.impossibleIllegalState("hostScoreAverageFirstVSHostScoreAverageSecondLevel0");
+            }
+
+            switch (hostDrawsAverageVSTotalHostDrawsAverageLevel5) {
+                case VARIANT0:
+                    hostWinInOvertimeOrShootouts++;
+                    guestWinInOvertimeOrShootouts++;
+                    break;
+                case VARIANT1:
+                    hostWinInPeriods++;
+                    guestWinInPeriods++;
+                    break;
+                case VARIANT2:
+                    break;
+                default:
+                    Utils.impossibleIllegalState("hostScoreAverageFirstVSHostScoreAverageSecondLevel0");
+            }
+
+            switch (guestDrawsAverageVSTotalGuestDrawsAverageLevel6) {
+                case VARIANT0:
+                    hostWinInOvertimeOrShootouts++;
+                    guestWinInOvertimeOrShootouts++;
+                    break;
+                case VARIANT1:
+                    hostWinInPeriods++;
+                    guestWinInPeriods++;
+                case VARIANT2:
+                    break;
+                default:
+                    Utils.impossibleIllegalState("hostScoreAverageFirstVSHostScoreAverageSecondLevel0");
+            }
+
+            switch (hostWinsAverageVSGuestWinsAverageLevel7) {
+                case VARIANT0:
+                    hostWinInPeriods++;
+                    hostWinInOvertimeOrShootouts++;
+                    break;
+                case VARIANT1:
+                    guestWinInPeriods++;
+                    guestWinInOvertimeOrShootouts++;
+                    break;
+                case VARIANT2:
+                    break;
+                default:
+                    Utils.impossibleIllegalState("hostScoreAverageFirstVSHostScoreAverageSecondLevel0");
+            }
+
+            final int hostWin = hostWinInPeriods + hostWinInOvertimeOrShootouts;
+            final int guestWin = guestWinInPeriods + guestWinInOvertimeOrShootouts;
+            final int winInPeriods = hostWinInPeriods + guestWinInPeriods;
+            int draw = hostWinInOvertimeOrShootouts + guestWinInOvertimeOrShootouts;
+
+            final boolean isHostWin;
+            if (hostWin > guestWin) {
+                isHostWin = true;
+            } else if (hostWin < guestWin) {
+                isHostWin = false;
+            } else {
+                isHostWin = hostWinsAverageVSGuestWinsAverageLevel7 != Variants.VARIANT1;
+                draw++;
+            }
+
+            final boolean isDraw;
+            if (winInPeriods > draw) {
+                isDraw = false;
+            } else if (winInPeriods < draw) {
+                isDraw = true;
+            } else {
+                isDraw = hostDrawsAverageVSTotalHostDrawsAverageLevel5 == Variants.VARIANT0
+                        && guestDrawsAverageVSTotalGuestDrawsAverageLevel6 == Variants.VARIANT0;
+            }
+
+            final int min = Math.min(first, second);
             final KHLMatchInfo resultInfo;
-            if (hostScoreAverage.first > hostScoreAverage.second + settings.deltaHostScore) { // 0000000
-                // Хозяева в среднем забивают больше гостей.
-                if (guestScoreAverage.second > guestScoreAverage.first + settings.deltaGuestScore) { // 0000000
-                    // Гости в среднем забивают больше хозяев.
-                    // Сложный случай по счету.
-                    resultInfo = null;
-                } else if (guestScoreAverage.second + settings.deltaGuestScore < guestScoreAverage.first) { // 0100000
-                    // Гости в среднем забивают меньше хозяев.
-                    // Простой случай по счету.
-                    if (hostWinsAverage > totalHostWinsAverage + settings.deltaHostWins) { // 0100000
-                        // Хозяева выигрывают чаще total.
-                        // Простой случай по победам хозяев.
-                        if (guestWinsAverage > totalGuestWinsAverage + settings.deltaGuestWins) { // 0100000
-                            // Гости выигрывают чаще total.
-                            // Сложный случай по победам гостей.
-                            if (hostScoreAverage.first - guestScoreAverage.second > settings.deltaScore
-                                    || first - second > 1) { // 0100000
-                                // Разница в пользу хозяев велика, это победа хозяев в основное время.
-                                if (first <= second) {
-                                    strangeCase("sc003", queryInfo);
-                                }
-                                resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(first, second));
-                            } else if (guestScoreAverage.second - hostScoreAverage.first > settings.deltaScore
-                                    || second - first > 1) { // 0101000
-                                // Разница в пользу гостей велика, это победа гостей в основное время.
-                                resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(first, second));
-                            } else { // 0102000
-                                // Разница сравнима, посмотрим на ничьи.
-                                Utils.checkInterval(Math.abs(first - second), 0, 1, () -> "First - second");
-                                final int min = Math.min(first, second);
-                                if (hostDrawsAverage > totalHostDrawsAverage + settings.deltaHostDraws) { // 0102000
-                                    // Хозяева имеют ничьи чаще total.
-                                    // Считаем, что "мнение" хозяев важнее, и гости их не переубедят, это ничья.
-                                    if (hostWinsAverage > guestWinsAverage) { // 0102000
-                                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min + 1,
-                                                min)); // todo сделать ничьей по периодам
-                                    } else { // 0102010
-                                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min,
-                                                min + 1)); // todo сделать ничьей по периодам
-                                    }
-                                } else if (hostDrawsAverage
-                                        < totalHostDrawsAverage - settings.deltaHostDraws) { // 0102100
-                                    // Хозяева имеют ничьи реже total.
-                                    // Считаем, что "мнение" хозяев важнее, и гости их не переубедят, это не ничья.
-                                    if (hostWinsAverage > guestWinsAverage) {
-                                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min + 1,
-                                                min)); // todo сделать победой хозяев в основное время
-                                    } else {
-                                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min,
-                                                min + 1)); // todo сделать победой хозяев в основное время
-                                    }
-                                } else { // 0102200
-                                    // Хозяева имеют ничьи на уровне total.
-                                    // 'if' statement can be collapsed исправится, когда разберемся с периодами.
-                                    if (guestDrawsAverage
-                                            > totalGuestDrawsAverage + settings.deltaGuestDraws) { // 0102200
-                                        // Гости имеют ничьи чаще total.
-                                        // Простой случай по ничьям, хозяевам все равно, гости за ничью.
-                                        if (hostWinsAverage > guestWinsAverage) { // 0102200
-                                            resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min + 1,
-                                                    min)); // todo сделать ничьей по периодам
-                                        } else { // 0102210
-                                            resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min,
-                                                    min + 1)); // todo сделать ничьей по периодам
-                                        }
-                                    } else { // 0102210
-                                        // Простой случай по ничьям, и хозяевам, и гостям все равно.
-                                        if (hostWinsAverage > guestWinsAverage) { // 0102210
-                                            resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min + 1,
-                                                    min)); // todo сделать победой хозяев в основное время
-                                        } else { // 0122111
-                                            resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min,
-                                                    min + 1)); // todo сделать победой хозяев в основное время
-                                        }
-                                    }
-                                }
-                            }
-                        } else { // 0101000
-                            // Гости выигрывают реже total (простой случай по победам гостей) или
-                            // гости выигрывают на уровне total (средний по сложности случай по победам гостей).
-                            // 2-3 простых случая, хозяева явно побеждают, надо определиться, в основное ли время.
-                            if (hostScoreAverage.first - guestScoreAverage.second > settings.deltaScore
-                                    || first - second > 1) { // 0101000
-                                // Разница в пользу хозяев велика, это победа хозяев в основное время.
-                                if (first <= second) {
-                                    strangeCase("sc001", queryInfo);
-                                }
-                                resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(first, second));
-                            } else if (guestScoreAverage.second - hostScoreAverage.first
-                                    > settings.deltaScore) { // 0101100
-                                // Разница в пользу гостей велика, это странно.
-                                resultInfo = null;
-                                strangeCase("sc002", queryInfo);
-                            } else { // 0101200
-                                // Разница сравнима, посмотрим на ничьи.
-                                Utils.checkInterval(first, second, second + 1, () -> "First in second");
-                                if (hostDrawsAverage > totalHostDrawsAverage + settings.deltaHostDraws) { // 0101200
-                                    // Хозяева имеют ничьи чаще total.
-                                    // Считаем, что "мнение" хозяев важнее, и гости их не переубедят, это ничья.
-                                    resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(second + 1,
-                                            second)); // todo сделать ничьей по периодам
-                                } else if (hostDrawsAverage < totalHostDrawsAverage
-                                        - settings.deltaHostDraws) { // 0101210
-                                    // Хозяева имеют ничьи реже total.
-                                    // Считаем, что "мнение" хозяев важнее, и гости их не переубедят, это не ничья.
-                                    resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(second + 1,
-                                            second)); // todo сделать победой хозяев в основное время
-                                } else { // 0101220
-                                    // Хозяева имеют ничьи на уровне total.
-                                    // 'if' statement can be collapsed исправится, когда разберемся с периодами.
-                                    if (guestDrawsAverage
-                                            > totalGuestDrawsAverage + settings.deltaGuestDraws) { // 0101220
-                                        // Гости имеют ничьи чаще total.
-                                        // Простой случай по ничьям, хозяевам все равно, гости за ничью.
-                                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(second + 1,
-                                                second)); // todo сделать ничьей по периодам
-                                    } else { // 0101221
-                                        // Простой случай по ничьям, и хозяевам, и гостям все равно.
-                                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(second + 1,
-                                                second)); // todo сделать победой хозяев в основное время
-                                    }
-                                }
-                            }
-                        }
-                    } else if (hostWinsAverage < totalHostWinsAverage - settings.deltaHostWins) { // 0110000
-                        // Хозяева выигрывают реже total.
-                        // Сложный случай по победам хозяев.
-                        if (guestWinsAverage > totalGuestWinsAverage + settings.deltaGuestWins) { // 0110000
-                            // Гости выигрывают чаще total.
-                            // Сложный случай по победам гостей.
-                            if (hostScoreAverage.first - guestScoreAverage.second > settings.deltaScore
-                                    || first - second > 1) { // 0110000
-                                // Разница в пользу хозяев велика, это победа хозяев в основное время.
-                                if (first <= second) {
-                                    strangeCase("sc003", queryInfo);
-                                }
-                                resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(first, second));
-                            } else if (guestScoreAverage.second - hostScoreAverage.first > settings.deltaScore
-                                    || second - first > 1) { // 0111000
-                                // Разница в пользу гостей велика, это победа гостей в основное время.
-                                resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(first, second));
-                            } else { // 0112000
-                                // Разница сравнима, посмотрим на ничьи.
-                                Utils.checkInterval(Math.abs(first - second), 0, 1, () -> "First - second");
-                                final int min = Math.min(first, second);
-                                if (hostDrawsAverage > totalHostDrawsAverage + settings.deltaHostDraws) { // 0112000
-                                    // Хозяева имеют ничьи чаще total.
-                                    // Считаем, что "мнение" хозяев важнее, и гости их не переубедят, это ничья.
-                                    if (hostWinsAverage > guestWinsAverage) { // 0112000
-                                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min + 1,
-                                                min)); // todo сделать ничьей по периодам
-                                    } else { // 0112010
-                                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min,
-                                                min + 1)); // todo сделать ничьей по периодам
-                                    }
-                                } else if (hostDrawsAverage
-                                        < totalHostDrawsAverage - settings.deltaHostDraws) { // 0112100
-                                    // Хозяева имеют ничьи реже total.
-                                    // Считаем, что "мнение" хозяев важнее, и гости их не переубедят, это не ничья.
-                                    if (hostWinsAverage > guestWinsAverage) {
-                                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min + 1,
-                                                min)); // todo сделать победой хозяев в основное время
-                                    } else {
-                                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min,
-                                                min + 1)); // todo сделать победой хозяев в основное время
-                                    }
-                                } else { // 0112200
-                                    // Хозяева имеют ничьи на уровне total.
-                                    // 'if' statement can be collapsed исправится, когда разберемся с периодами.
-                                    if (guestDrawsAverage
-                                            > totalGuestDrawsAverage + settings.deltaGuestDraws) { // 0112200
-                                        // Гости имеют ничьи чаще total.
-                                        // Простой случай по ничьям, хозяевам все равно, гости за ничью.
-                                        if (hostWinsAverage > guestWinsAverage) { // 0112200
-                                            resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min + 1,
-                                                    min)); // todo сделать ничьей по периодам
-                                        } else { // 0112210
-                                            resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min,
-                                                    min + 1)); // todo сделать ничьей по периодам
-                                        }
-                                    } else { // 0112210
-                                        // Простой случай по ничьям, и хозяевам, и гостям все равно.
-                                        if (hostWinsAverage > guestWinsAverage) { // 0112210
-                                            resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min + 1,
-                                                    min)); // todo сделать победой хозяев в основное время
-                                        } else { // 0122111
-                                            resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min,
-                                                    min + 1)); // todo сделать победой хозяев в основное время
-                                        }
-                                    }
-                                }
-                            }
-                        } else { // 0111000
-                            // Гости выигрывают реже total (простой случай по победам гостей) или
-                            // гости выигрывают на уровне total (средний по сложности случай по победам гостей).
-                            // 2-3 простых случая, хозяева явно побеждают, надо определиться, в основное ли время.
-                            if (hostScoreAverage.first - guestScoreAverage.second > settings.deltaScore
-                                    || first - second > 1) { // 0111000
-                                // Разница в пользу хозяев велика, это победа хозяев в основное время.
-                                if (first <= second) {
-                                    strangeCase("sc001", queryInfo);
-                                }
-                                resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(first, second));
-                            } else if (guestScoreAverage.second - hostScoreAverage.first
-                                    > settings.deltaScore) { // 0111100
-                                // Разница в пользу гостей велика, это странно.
-                                resultInfo = null;
-                                strangeCase("sc002", queryInfo);
-                            } else { // 0111200
-                                // Разница сравнима, посмотрим на ничьи.
-                                Utils.checkInterval(first, second, second + 1, () -> "First in second");
-                                if (hostDrawsAverage > totalHostDrawsAverage + settings.deltaHostDraws) { // 0111200
-                                    // Хозяева имеют ничьи чаще total.
-                                    // Считаем, что "мнение" хозяев важнее, и гости их не переубедят, это ничья.
-                                    resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(second + 1,
-                                            second)); // todo сделать ничьей по периодам
-                                } else if (hostDrawsAverage < totalHostDrawsAverage
-                                        - settings.deltaHostDraws) { // 0111210
-                                    // Хозяева имеют ничьи реже total.
-                                    // Считаем, что "мнение" хозяев важнее, и гости их не переубедят, это не ничья.
-                                    resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(second + 1,
-                                            second)); // todo сделать победой хозяев в основное время
-                                } else { // 0111220
-                                    // Хозяева имеют ничьи на уровне total.
-                                    // 'if' statement can be collapsed исправится, когда разберемся с периодами.
-                                    if (guestDrawsAverage
-                                            > totalGuestDrawsAverage + settings.deltaGuestDraws) { // 0111220
-                                        // Гости имеют ничьи чаще total.
-                                        // Простой случай по ничьям, хозяевам все равно, гости за ничью.
-                                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(second + 1,
-                                                second)); // todo сделать ничьей по периодам
-                                    } else { // 0111221
-                                        // Простой случай по ничьям, и хозяевам, и гостям все равно.
-                                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(second + 1,
-                                                second)); // todo сделать победой хозяев в основное время
-                                    }
-                                }
-                            }
-                        }
-                    } else { // 0120000
-                        // Хозяева выигрывают на уровне total.
-                        // Средний по сложности случай по победам хозяев.
-                        resultInfo = null;
+            if (isHostWin) {
+                if (isDraw) {
+                    // todo сделать ничьи по периодам
+                    if (first > second) {
+                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(first, second));
+                    } else {
+                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min + 1, min));
                     }
-                } else { // 0200000
-                    // Гости в среднем забивают примерно столько же, что и хозяева.
-                    // Средний по сложности случай по счету.
-                    resultInfo = null;
+                } else {
+                    // todo сделать победой хозяев в основное время
+                    if (first > second) {
+                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(first, second));
+                    } else {
+                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min + 1, min));
+                    }
                 }
-            } else if (hostScoreAverage.first + settings.deltaHostScore < hostScoreAverage.second) { // 1000000
-                // Хозяева в среднем забивают меньше гостей.
-                if (guestScoreAverage.second > guestScoreAverage.first + settings.deltaGuestScore) { // 1000000
-                    // Гости в среднем забивают больше хозяев.
-                    // Простой случай по счету.
-                    resultInfo = null;
-                } else if (guestScoreAverage.second + settings.deltaGuestScore < guestScoreAverage.first) { // 1100000
-                    // Гости в среднем забивают меньше хозяев.
-                    // Сложный случай по счету.
-                    resultInfo = null;
-                } else { // 1200000
-                    // Гости в среднем забивают примерно столько же, что и хозяева.
-                    // Средний по сложности случай по счету.
-                    resultInfo = null;
-                }
-            } else { // 2000000
-                // Хозяева в среднем забивают примерно столько же, что и гости.
-                if (guestScoreAverage.second > guestScoreAverage.first + settings.deltaGuestScore) { // 2000000
-                    // Гости в среднем забивают больше хозяев.
-                    // Средний по сложности случай по счету.
-                    resultInfo = null;
-                } else if (guestScoreAverage.second + settings.deltaGuestScore < guestScoreAverage.first) { // 2100000
-                    // Гости в среднем забивают меньше хозяев.
-                    // Средний по сложности случай по счету.
-                    resultInfo = null;
-                } else { // 2200000
-                    // Гости в среднем забивают примерно столько же, что и хозяева.
-                    // Простой случай по счету.
-                    resultInfo = null;
+            } else {
+                if (isDraw) {
+                    // todo сделать ничьи по периодам
+                    if (first < second) {
+                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(first, second));
+                    } else {
+                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min, min + 1));
+                    }
+                } else {
+                    // todo сделать победой хозяев в основное время
+                    if (first < second) {
+                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(first, second));
+                    } else {
+                        resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min, min + 1));
+                    }
                 }
             }
+
             if (resultInfo == null) {
-                continue;
+                Utils.impossibleIllegalState("resultInfo is undefined");
             }
             resultStorage.add(resultInfo);
         }
@@ -584,10 +584,6 @@ public class KHLSolver02 {
             Utils.checkInterval(stats.guestDraws.value, 0, stats.guestDraws.count,
                     () -> String.format("%s guestDraws.value", key));
         }
-    }
-
-    private void strangeCase(final String description, final KHLMatchInfo info) {
-        throw new IllegalStateException(String.format("Strange case, %s, info: %s", description, info));
     }
 
     public List<KHLMatchInfo> getResultList() {

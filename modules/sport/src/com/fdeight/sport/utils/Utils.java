@@ -25,8 +25,8 @@ public class Utils {
                 labelSupplier.get(), value, min, max));
     }
 
-    public static void impossibleIllegalState() {
-        throw new IllegalStateException("Impossible illegal state");
+    public static void impossibleIllegalState(final String description) {
+        throw new IllegalStateException(String.format("Impossible illegal state, %s", description));
     }
 
     public static int round(final double value) {

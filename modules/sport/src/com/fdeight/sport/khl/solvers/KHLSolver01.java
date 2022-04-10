@@ -224,7 +224,7 @@ public class KHLSolver01 {
             guestStats.guestWins.add(1);
             totalStats.guestWins.add(1);
         } else {
-            Utils.impossibleIllegalState();
+            Utils.impossibleIllegalState("addWins");
         }
     }
 
@@ -241,7 +241,7 @@ public class KHLSolver01 {
             guestStats.guestDraws.add(0);
             totalStats.guestDraws.add(0);
         } else {
-            Utils.impossibleIllegalState();
+            Utils.impossibleIllegalState("addDraws");
         }
     }
 
