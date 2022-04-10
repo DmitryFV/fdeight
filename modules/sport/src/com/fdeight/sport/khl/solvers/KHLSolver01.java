@@ -6,7 +6,7 @@ import com.fdeight.sport.utils.Utils;
 
 import java.util.*;
 
-public class KHLSolver {
+public class KHLSolver01 {
     private static final String TOTAL = "Total";
 
     private static class StatScore {
@@ -139,7 +139,7 @@ public class KHLSolver {
 
     private final Settings settings;
 
-    public KHLSolver(final KHLStorage initStorage, final KHLStorage queryStorage) {
+    public KHLSolver01(final KHLStorage initStorage, final KHLStorage queryStorage) {
         this.initStorage = initStorage;
         this.queryStorage = queryStorage;
         resultStorage = new KHLStorage();
