@@ -536,7 +536,7 @@ public class KHLSolver02 {
                         resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(min, min + 1));
                     }
                 } else {
-                    // todo сделать победой хозяев в основное время
+                    // todo сделать победой гостей в основное время
                     if (first < second) {
                         resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(first, second));
                     } else {
