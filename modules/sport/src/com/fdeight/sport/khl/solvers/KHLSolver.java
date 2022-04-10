@@ -4,12 +4,11 @@ import com.fdeight.sport.khl.data.KHLMatchInfo;
 import com.fdeight.sport.khl.data.KHLStorage;
 import com.fdeight.sport.utils.Utils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 
 public class KHLSolver {
+    private static final String TOTAL = "Total";
+
     private static class StatScore {
         public int count;
         public int first;
@@ -83,11 +82,11 @@ public class KHLSolver {
          */
         private final Stat guestWins;
         /**
-         * Ничьи на своей площадке.
+         * Ничьи в основное время на своей площадке.
          */
         private final Stat hostDraws;
         /**
-         * Ничьи в гостях.
+         * Ничьи в основное время в гостях.
          */
         private final Stat guestDraws;
 
@@ -131,7 +130,7 @@ public class KHLSolver {
      */
     private final KHLStorage resultStorage;
 
-    private final Map<String, Stats> teamsStats;
+    private final Map<String, Stats> teamStats;
 
     private final Settings settings;
 
@@ -139,7 +138,7 @@ public class KHLSolver {
         this.initStorage = initStorage;
         this.queryStorage = queryStorage;
         resultStorage = new KHLStorage();
-        teamsStats = new TreeMap<>();
+        teamStats = new TreeMap<>();
         settings = new Settings();
         checkHonest();
     }
@@ -167,48 +166,87 @@ public class KHLSolver {
     }
 
     private void computeTeamStats() {
+        checkBeforeComputeStats();
+        final Stats totalStats = teamStats.computeIfAbsent(TOTAL, key -> new Stats());
         final List<KHLMatchInfo> initList = initStorage.getUnmodifiableList();
         for (final KHLMatchInfo info : initList) {
-            final Stats hostStats = teamsStats.computeIfAbsent(info.firstTeam, key -> new Stats());
-            hostStats.hostScore.add(info.score);
-            for (int i = 0; i < info.scorePeriods.size(); i++) {
-                hostStats.hostScorePeriods[i].add(info.scorePeriods.get(i));
-            }
-            final Stats guestStats = teamsStats.computeIfAbsent(info.secondTeam, key -> new Stats());
-            guestStats.guestScore.add(info.score);
-            for (int i = 0; i < info.scorePeriods.size(); i++) {
-                guestStats.guestScorePeriods[i].add(info.scorePeriods.get(i));
-            }
-            if (info.score.first > info.score.second) {
-                hostStats.hostWins.add(1);
-                guestStats.guestWins.add(0);
-            } else if (info.score.first < info.score.second) {
-                hostStats.hostWins.add(0);
-                guestStats.guestWins.add(1);
-            } else {
-                Utils.impossibleIllegalState();
-            }
-            if (info.scorePeriods.size() > KHLMatchInfo.PLAIN_PERIODS_COUNT) {
-                hostStats.hostDraws.add(1);
-                guestStats.guestDraws.add(1);
-            } else if (info.scorePeriods.size() == KHLMatchInfo.PLAIN_PERIODS_COUNT) {
-                hostStats.hostDraws.add(0);
-                guestStats.guestDraws.add(0);
-            } else {
-                Utils.impossibleIllegalState();
-            }
+            final Stats hostStats = teamStats.computeIfAbsent(info.firstTeam, key -> new Stats());
+            final Stats guestStats = teamStats.computeIfAbsent(info.secondTeam, key -> new Stats());
+            addScore(info.score, hostStats, guestStats, totalStats);
+            addScorePeriods(info.scorePeriods, hostStats, guestStats, totalStats);
+            addWins(info.score, hostStats, guestStats, totalStats);
+            addDraws(info, hostStats, guestStats, totalStats);
+        }
+    }
+
+    private void checkBeforeComputeStats() {
+        Utils.checkNotEquals(initStorage.size(), 0, () -> "initStorage.size()");
+        Utils.checkEquals(teamStats.size(), 0, () -> "teamStats.size()");
+    }
+
+    private void addScore(final KHLMatchInfo.Score score, final Stats hostStats, final Stats guestStats,
+                          final Stats totalStats) {
+        hostStats.hostScore.add(score);
+        totalStats.hostScore.add(score);
+        guestStats.guestScore.add(score);
+        totalStats.guestScore.add(score);
+    }
+
+    private void addScorePeriods(final List<KHLMatchInfo.Score> scorePeriods,
+                                 final Stats hostStats, final Stats guestStats,
+                                 final Stats totalStats) {
+        for (int i = 0; i < scorePeriods.size(); i++) {
+            hostStats.hostScorePeriods[i].add(scorePeriods.get(i));
+            totalStats.hostScorePeriods[i].add(scorePeriods.get(i));
+            guestStats.guestScorePeriods[i].add(scorePeriods.get(i));
+            totalStats.guestScorePeriods[i].add(scorePeriods.get(i));
+        }
+    }
+
+    private void addWins(final KHLMatchInfo.Score score, final Stats hostStats, final Stats guestStats,
+                         final Stats totalStats) {
+        if (score.first > score.second) {
+            hostStats.hostWins.add(1);
+            totalStats.hostWins.add(1);
+            guestStats.guestWins.add(0);
+            totalStats.guestWins.add(0);
+        } else if (score.first < score.second) {
+            hostStats.hostWins.add(0);
+            totalStats.hostWins.add(0);
+            guestStats.guestWins.add(1);
+            totalStats.guestWins.add(1);
+        } else {
+            Utils.impossibleIllegalState();
+        }
+    }
+
+    private void addDraws(final KHLMatchInfo info, final Stats hostStats, final Stats guestStats,
+                          final Stats totalStats) {
+        if (info.scorePeriods.size() > KHLMatchInfo.PLAIN_PERIODS_COUNT) {
+            hostStats.hostDraws.add(1);
+            totalStats.hostDraws.add(1);
+            guestStats.guestDraws.add(1);
+            totalStats.guestDraws.add(1);
+        } else if (info.scorePeriods.size() == KHLMatchInfo.PLAIN_PERIODS_COUNT) {
+            hostStats.hostDraws.add(0);
+            totalStats.hostDraws.add(0);
+            guestStats.guestDraws.add(0);
+            totalStats.guestDraws.add(0);
+        } else {
+            Utils.impossibleIllegalState();
         }
     }
 
     @SuppressWarnings("DuplicateExpressions")
     private void computeResult() {
-        Utils.checkEquals(resultStorage.size(), 0, () -> "resultStorage.size()");
+        checkBeforeComputeResult();
+        final Stats totalStats = teamStats.get(TOTAL);
         final List<KHLMatchInfo> queryList = queryStorage.getUnmodifiableList();
         for (final KHLMatchInfo info : queryList) {
-            final Stats hostStats = teamsStats.get(info.firstTeam);
-            Objects.requireNonNull(hostStats, "hostStats undefined");
-            final Stats guestStats = teamsStats.computeIfAbsent(info.secondTeam, key -> new Stats());
-            Objects.requireNonNull(guestStats, "guestStats undefined");
+            final Stats hostStats = Objects.requireNonNull(teamStats.get(info.firstTeam),
+                    "hostStats undefined");
+            final Stats guestStats = Objects.requireNonNull(teamStats.get(info.secondTeam),
+                    "guestStats undefined");
             final Average hostScoreAverage = hostStats.hostScore.computeAverage();
             final Average guestScoreAverage = hostStats.guestScore.computeAverage();
             final double hostWinsAverage = hostStats.hostWins.computeAverage();
@@ -257,7 +295,46 @@ public class KHLSolver {
         }
     }
 
+    private void checkBeforeComputeResult() {
+        checkTeamStats();
+        Utils.checkEquals(resultStorage.size(), 0, () -> "resultStorage.size()");
+    }
+
+    private void checkTeamStats() {
+        Utils.checkNotEquals(teamStats.size(), 0, () -> "teamStats.size()");
+
+        final Stats totalStats = Objects.requireNonNull(teamStats.get(TOTAL), "Total undefined");
+
+        Utils.checkEquals(totalStats.hostWins.count, initStorage.size(), () -> "Total hostWins.count");
+        Utils.checkEquals(totalStats.guestWins.count, initStorage.size(), () -> "Total guestWins.count");
+        Utils.checkEquals(totalStats.hostWins.value + totalStats.guestWins.value, initStorage.size(),
+                () -> "Sum of wins.value");
+        Utils.checkInterval(totalStats.hostWins.value, 0, initStorage.size(), () -> "Total hostWins.value");
+
+        Utils.checkEquals(totalStats.hostDraws.count, initStorage.size(), () -> "Total hostDraws.count");
+        Utils.checkEquals(totalStats.guestDraws.count, initStorage.size(), () -> "Total guestDraws.count");
+        Utils.checkEquals(totalStats.hostDraws.value, totalStats.guestDraws.value, () -> "Total draws values");
+        Utils.checkInterval(totalStats.hostDraws.value, 0, initStorage.size(), () -> "Total hostDraws.value");
+
+        for (final String key : teamStats.keySet()) {
+            final Stats stats = teamStats.get(key);
+            Utils.checkInterval(stats.hostWins.value, 0, stats.hostWins.count,
+                    () -> String.format("%s hostWins.value", key));
+            Utils.checkInterval(stats.guestWins.value, 0, stats.guestWins.count,
+                    () -> String.format("%s guestWins.value", key));
+            Utils.checkInterval(stats.hostDraws.value, 0, stats.hostDraws.count,
+                    () -> String.format("%s hostDraws.value", key));
+            Utils.checkInterval(stats.guestDraws.value, 0, stats.guestDraws.count,
+                    () -> String.format("%s guestDraws.value", key));
+        }
+    }
+
     public List<KHLMatchInfo> getResultList() {
+        checkBeforeGetResult();
         return resultStorage.getUnmodifiableList();
+    }
+
+    private void checkBeforeGetResult() {
+        Utils.checkNotEquals(resultStorage.size(), 0, () -> "resultStorage.size()");
     }
 }

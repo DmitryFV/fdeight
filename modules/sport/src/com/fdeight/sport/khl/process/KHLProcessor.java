@@ -17,12 +17,15 @@ public class KHLProcessor {
         System.out.println(String.format("Start %s", KHLProcessor.class.getSimpleName()));
         final KHLStorage khlStorage = new KHLStorage();
         final TxtParser parser = new KHLRBParser(khlStorage);
-        final File file = new File("txt_rb_v03");
+        //final File file = new File("txt_rb_v03");
+        final File file = new File("2016-2017_txt_rb_v03");
         parser.parse(file);
         khlStorage.sort();
         System.out.println(String.format("Storage size = %d", khlStorage.size()));
         final Date min = new GregorianCalendar(2016, Calendar.AUGUST, 1).getTime();
         final Date max = new GregorianCalendar(2016, Calendar.OCTOBER, 31).getTime();
+//        final Date min = new GregorianCalendar(2016, Calendar.OCTOBER, 1).getTime();
+//        final Date max = new GregorianCalendar(2016, Calendar.OCTOBER, 1).getTime();
         final KHLStorage subStorage = khlStorage.getSubStorageFiltredByDate(min, max);
         System.out.println(String.format("Sub storage size = %d", subStorage.size()));
         final Date queryMin = new GregorianCalendar(2016, Calendar.NOVEMBER, 1).getTime();
