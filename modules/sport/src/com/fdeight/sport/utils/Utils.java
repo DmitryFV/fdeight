@@ -28,4 +28,8 @@ public class Utils {
     public static void impossibleIllegalState() {
         throw new IllegalStateException("Impossible illegal state");
     }
+
+    public static int round(final double value) {
+        return (int) Math.round(value);
+    }
 }

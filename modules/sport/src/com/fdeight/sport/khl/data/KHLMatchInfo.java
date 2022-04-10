@@ -43,6 +43,11 @@ public class KHLMatchInfo {
             this.first = first;
             this.second = second;
         }
+
+        @Override
+        public String toString() {
+            return String.format("%d:%d", first, second);
+        }
     }
 
     public final Date date;
@@ -86,6 +91,17 @@ public class KHLMatchInfo {
         this.scorePeriods = null;
     }
 
+    public KHLMatchInfo(final KHLMatchInfo queryInfo,
+                        final Score score) {
+        this.date = queryInfo.date;
+        this.tag = queryInfo.tag;
+        this.type = queryInfo.type;
+        this.firstTeam = queryInfo.firstTeam;
+        this.secondTeam = queryInfo.secondTeam;
+        this.score = score;
+        this.scorePeriods = null;
+    }
+
     private void checkCorrectness() {
         int first = 0;
         int second = 0;
@@ -121,5 +137,18 @@ public class KHLMatchInfo {
                 throw new IllegalStateException(String.format("Illegal scorePeriods.size() (%d)", scorePeriods.size()));
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "KHLMatchInfo{" +
+                "date=" + date +
+                ", tag=" + tag +
+                ", type=" + type +
+                ", firstTeam='" + firstTeam + '\'' +
+                ", secondTeam='" + secondTeam + '\'' +
+                ", score=" + score +
+                ", scorePeriods=" + scorePeriods +
+                '}';
     }
 }
