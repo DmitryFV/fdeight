@@ -1,11 +1,17 @@
 package com.fdeight.sport.utils;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class Utils {
-    public static void checkEquals(final int value1, final int value2, final Supplier<String> labelSupplier) {
+    public static void checkEquals(final long value1, final long value2, final Supplier<String> labelSupplier) {
         if (value1 == value2) return;
         throw new IllegalStateException(String.format("%s: %d != %d", labelSupplier.get(), value1, value2));
+    }
+
+    public static void checkEquals(final String value1, final String value2, final Supplier<String> labelSupplier) {
+        if (Objects.requireNonNull(value1, labelSupplier.get()).equals(value2)) return;
+        throw new IllegalStateException(String.format("%s: %s != %s", labelSupplier.get(), value1, value2));
     }
 
     public static void checkNotEquals(final int value1, final int value2, final Supplier<String> labelSupplier) {

@@ -1,5 +1,7 @@
 package com.fdeight.sport.khl.data;
 
+import com.fdeight.sport.utils.Utils;
+
 import java.util.*;
 
 public class KHLStorage {
@@ -10,6 +12,11 @@ public class KHLStorage {
     };
 
     private final List<KHLMatchInfo> storage = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return storage.toString();
+    }
 
     public void add(final KHLMatchInfo info) {
         storage.add(info);
@@ -61,5 +68,55 @@ public class KHLStorage {
             subStorage.add(queryInfo);
         }
         return subStorage;
+    }
+
+    /**
+     * Возвращает подмножество записей из хранилища, отфильтрованных по записям (по дате и командам)
+     * из другого хранилища.
+     * Сортировка сохраняется согласно текущей сортировке хранилища, из которого выбираются записи.
+     *
+     * @return подмножество записей из хранилища.
+     */
+    public KHLStorage getSubStorageFiltredByStorage(final KHLStorage khlStorage) {
+        final KHLStorage subStorage = new KHLStorage();
+        for (final KHLMatchInfo info : storage) {
+            for (final KHLMatchInfo by : khlStorage.storage) {
+                if (info.date.getTime() != by.date.getTime()) continue;
+                if (!info.firstTeam.equals(by.firstTeam)) continue;
+                if (!info.secondTeam.equals(by.secondTeam)) continue;
+                subStorage.add(info);
+                break;
+            }
+        }
+        return subStorage;
+    }
+
+    public KHLMetric compare(final List<KHLMatchInfo> list) {
+        Utils.checkEquals(storage.size(), list.size(), () -> "size");
+        int countDraws = 0;
+        int right = 0;
+        int rightDraws = 0;
+        for (int i = 0; i < storage.size(); i++) {
+            final KHLMatchInfo info = storage.get(i);
+            final KHLMatchInfo otherInfo = list.get(i);
+            Utils.checkEquals(info.date.getTime(), otherInfo.date.getTime(), () -> "date");
+            Utils.checkEquals(info.firstTeam, otherInfo.firstTeam, () -> "firstTeam");
+            Utils.checkEquals(info.secondTeam, otherInfo.secondTeam, () -> "secondTeam");
+            if (info.scorePeriods.size() == KHLMatchInfo.PLAIN_PERIODS_COUNT) {
+                final int signum = Integer.signum(info.score.first - info.score.second);
+                Utils.checkNotEquals(signum, 0, () -> "signum");
+                if (otherInfo.scorePeriods.size() == KHLMatchInfo.PLAIN_PERIODS_COUNT
+                        && signum == Integer.signum(otherInfo.score.first - otherInfo.score.second)) {
+                    right++;
+                }
+            } else {
+                countDraws++;
+                if (otherInfo.scorePeriods.size() > KHLMatchInfo.PLAIN_PERIODS_COUNT) {
+                    right++;
+                    rightDraws++;
+                }
+            }
+        }
+        return new KHLMetric(storage.size(), countDraws, right, rightDraws);
     }
 }

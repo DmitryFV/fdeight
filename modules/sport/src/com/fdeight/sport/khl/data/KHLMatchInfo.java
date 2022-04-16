@@ -102,6 +102,18 @@ public class KHLMatchInfo {
         this.scorePeriods = null;
     }
 
+    public KHLMatchInfo(final KHLMatchInfo queryInfo,
+                        final Score score, final Score[] scorePeriods) {
+        this.date = queryInfo.date;
+        this.tag = queryInfo.tag;
+        this.type = queryInfo.type;
+        this.firstTeam = queryInfo.firstTeam;
+        this.secondTeam = queryInfo.secondTeam;
+        this.score = score;
+        this.scorePeriods = List.of(scorePeriods);
+        checkCorrectness();
+    }
+
     private void checkCorrectness() {
         int first = 0;
         int second = 0;
