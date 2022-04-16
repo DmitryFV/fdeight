@@ -50,6 +50,8 @@ public class KHLMatchInfo {
         }
     }
 
+    public static final KHLMatchInfo.Score NIL_NIL = new KHLMatchInfo.Score(0, 0);
+
     public final Date date;
     /**
      * Вспомогательная переменная, помогающая задавать порядок для матчей с одинаковой датой.

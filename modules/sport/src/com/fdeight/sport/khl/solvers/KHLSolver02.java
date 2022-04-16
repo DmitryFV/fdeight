@@ -6,10 +6,10 @@ import com.fdeight.sport.utils.Utils;
 
 import java.util.*;
 
+import static com.fdeight.sport.khl.data.KHLMatchInfo.NIL_NIL;
+
 public class KHLSolver02 {
     private static final String TOTAL = "Total";
-
-    private static final KHLMatchInfo.Score NIL_NIL = new KHLMatchInfo.Score(0, 0);
 
     private static class StatScore {
         public int count;
@@ -542,7 +542,8 @@ public class KHLSolver02 {
             if (isHostWin) {
                 if (isDraw) {
                     resultInfo = new KHLMatchInfo(queryInfo, new KHLMatchInfo.Score(avg + 1, avg),
-                            new KHLMatchInfo.Score[]{new KHLMatchInfo.Score(avg, avg), NIL_NIL, NIL_NIL,
+                            new KHLMatchInfo.Score[]{new KHLMatchInfo.Score(avg, avg),
+                                    NIL_NIL, NIL_NIL,
                                     new KHLMatchInfo.Score(1, 0)});
                 } else {
                     if (first > second) {
@@ -568,16 +569,13 @@ public class KHLSolver02 {
                     }
                 }
             }
-
-            if (resultInfo == null) {
-                Utils.impossibleIllegalState("resultInfo is undefined");
-            }
             resultStorage.add(resultInfo);
         }
     }
 
     private void checkBeforeComputeResult() {
         checkTeamStats();
+        Utils.checkNotEquals(queryStorage.size(), 0, () -> "queryStorage.size()");
         Utils.checkEquals(resultStorage.size(), 0, () -> "resultStorage.size()");
     }
 
@@ -617,5 +615,7 @@ public class KHLSolver02 {
 
     private void checkBeforeGetResult() {
         Utils.checkNotEquals(resultStorage.size(), 0, () -> "resultStorage.size()");
+        Utils.checkEquals(queryStorage.size(), resultStorage.size(),
+                () -> "queryStorage.size() vs resultStorage.size()");
     }
 }
