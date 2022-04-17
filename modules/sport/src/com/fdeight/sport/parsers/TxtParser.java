@@ -35,11 +35,11 @@ public abstract class TxtParser {
     }
 
     private void started(final File file) {
-        System.out.println(String.format("Started [%s]", file.getName()));
+        //System.out.println(String.format("Started [%s]", file.getName()));
     }
 
     private void ended(final File file) {
-        System.out.println(String.format("Ended [%s]", file.getName()));
+        //System.out.println(String.format("Ended [%s]", file.getName()));
     }
 
     protected abstract void processLine(final int lineNumber, final String line) throws ParseException;

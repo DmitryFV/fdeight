@@ -56,7 +56,7 @@ public class KHLRBParser extends TxtParser {
 
     @Override
     protected void processLine(final int lineNumber, final String line) throws ParseException {
-        System.out.println(line);
+        //System.out.println(line);
         for (final ParseType parseType : ParseType.values()) {
             final Matcher typeMatcher = parseType.pattern.matcher(line);
             if (typeMatcher.matches()) {
@@ -74,7 +74,7 @@ public class KHLRBParser extends TxtParser {
             }
         }
         if (scorePeriodsLength < 0) {
-            System.out.println(String.format("Unparsed: [%s]", line));
+            //System.out.println(String.format("Unparsed: [%s]", line));
             return;
         }
         Utils.checkInterval(scorePeriodsLength, 3, 5, () -> "Score periods length");
