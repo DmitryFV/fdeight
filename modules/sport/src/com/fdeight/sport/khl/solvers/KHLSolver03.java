@@ -10,9 +10,9 @@ import static com.fdeight.sport.khl.data.KHLMatchInfo.NIL_NIL;
 
 /**
  * Случайный решатель, для контроля.
+ * Вероятности фиксированны.
  */
 public class KHLSolver03 {
-    private final Random rnd;
     /**
      * Хранилище информации о матчах, по которым идет запрос на прогноз результатов.
      * В информации о матчах в этом хранилище отсутствуют данные о счете.
@@ -23,10 +23,12 @@ public class KHLSolver03 {
      */
     private final KHLStorage resultStorage;
 
+    private final Random rnd;
+
     public KHLSolver03(final long seed, final KHLStorage queryStorage) {
-        rnd = new Random(seed);
         this.queryStorage = queryStorage;
         resultStorage = new KHLStorage();
+        rnd = new Random(seed);
     }
 
     public void solve() {
