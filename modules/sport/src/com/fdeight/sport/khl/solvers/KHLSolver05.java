@@ -13,6 +13,11 @@ import static com.fdeight.sport.khl.data.KHLMatchInfo.NIL_NIL;
 
 /**
  * Копия KHLSolver02 с добавлением весов предсказывающих характеристик.
+ * Внимание! Изменен порядок уровней по сравнению с KHLSolver02, уровень 07 (hostWinsAverageVSGuestWinsAverageLevel07)
+ * был передвинут выше (на 02: hostWinsAverageVSGuestWinsAverageLevel02), соответственно, бывшие уровни 02-06
+ * получили номер на 1 больше. Это было сделано чтобы проще было оптимизировать расчет весов: первые несколько уровней
+ * принудительно выставляются в максимальный вес (эксперименты показали, что эти уровни все равно так в итоге
+ * и выставляются).
  */
 public class KHLSolver05 {
     private static final String TOTAL = "Total";
@@ -309,75 +314,75 @@ public class KHLSolver05 {
             }
             countLevels++;
 
+            // Хозяева в среднем выигрывают против гости в среднем выигрывают.
+            // VARIANT1 - хозяева чаще, VARIANT1 - хозяева реже, VARIANT2 - столько же.
+            final Variants hostWinsAverageVSGuestWinsAverageLevel02;
+            if (hostWinsAverage > guestWinsAverage + settings.deltaWins) {
+                hostWinsAverageVSGuestWinsAverageLevel02 = Variants.VARIANT0;
+            } else if (hostWinsAverage + settings.deltaWins < guestWinsAverage) {
+                hostWinsAverageVSGuestWinsAverageLevel02 = Variants.VARIANT1;
+            } else {
+                hostWinsAverageVSGuestWinsAverageLevel02 = Variants.VARIANT2;
+            }
+            countLevels++;
+
             // Хозяева в среднем выигрывают против total хозяев.
             // VARIANT1 - хозяева чаще total, VARIANT1 - хозяева реже total, VARIANT2 - столько же.
-            final Variants hostWinsAverageVSTotalHostWinsAverageLevel02;
+            final Variants hostWinsAverageVSTotalHostWinsAverageLevel03;
             if (hostWinsAverage > totalHostWinsAverage + settings.deltaHostWins) {
-                hostWinsAverageVSTotalHostWinsAverageLevel02 = Variants.VARIANT0;
+                hostWinsAverageVSTotalHostWinsAverageLevel03 = Variants.VARIANT0;
             } else if (hostWinsAverage + settings.deltaHostWins < totalHostWinsAverage) {
-                hostWinsAverageVSTotalHostWinsAverageLevel02 = Variants.VARIANT1;
+                hostWinsAverageVSTotalHostWinsAverageLevel03 = Variants.VARIANT1;
             } else {
-                hostWinsAverageVSTotalHostWinsAverageLevel02 = Variants.VARIANT2;
+                hostWinsAverageVSTotalHostWinsAverageLevel03 = Variants.VARIANT2;
             }
             countLevels++;
 
             // Гости в среднем выигрывают против total гостей.
             // VARIANT1 - гости чаще total, VARIANT1 - гости реже total, VARIANT2 - столько же.
-            final Variants guestWinsAverageVSTotalGuestWinsAverageLevel03;
+            final Variants guestWinsAverageVSTotalGuestWinsAverageLevel04;
             if (guestWinsAverage > totalGuestWinsAverage + settings.deltaGuestWins) {
-                guestWinsAverageVSTotalGuestWinsAverageLevel03 = Variants.VARIANT0;
+                guestWinsAverageVSTotalGuestWinsAverageLevel04 = Variants.VARIANT0;
             } else if (guestWinsAverage + settings.deltaGuestWins < totalGuestWinsAverage) {
-                guestWinsAverageVSTotalGuestWinsAverageLevel03 = Variants.VARIANT1;
+                guestWinsAverageVSTotalGuestWinsAverageLevel04 = Variants.VARIANT1;
             } else {
-                guestWinsAverageVSTotalGuestWinsAverageLevel03 = Variants.VARIANT2;
+                guestWinsAverageVSTotalGuestWinsAverageLevel04 = Variants.VARIANT2;
             }
             countLevels++;
 
             // Хозяева в среднем забивают против гости в среднем забивают.
             // VARIANT1 - хозяева больше, VARIANT1 - хозяева меньше, VARIANT2 - столько же.
-            final Variants hostScoreAverageFirstVSGuestScoreAverageSecondLevel04;
+            final Variants hostScoreAverageFirstVSGuestScoreAverageSecondLevel05;
             if (hostScoreAverage.first > guestScoreAverage.second + settings.deltaScore || first > second + 1) {
-                hostScoreAverageFirstVSGuestScoreAverageSecondLevel04 = Variants.VARIANT0;
+                hostScoreAverageFirstVSGuestScoreAverageSecondLevel05 = Variants.VARIANT0;
             } else if (hostScoreAverage.first + settings.deltaScore < guestScoreAverage.second || first + 1 < second) {
-                hostScoreAverageFirstVSGuestScoreAverageSecondLevel04 = Variants.VARIANT1;
+                hostScoreAverageFirstVSGuestScoreAverageSecondLevel05 = Variants.VARIANT1;
             } else {
-                hostScoreAverageFirstVSGuestScoreAverageSecondLevel04 = Variants.VARIANT2;
+                hostScoreAverageFirstVSGuestScoreAverageSecondLevel05 = Variants.VARIANT2;
             }
             countLevels++;
 
             // Хозяева в среднем играют вничью против total хозяев.
             // VARIANT1 - хозяева чаще total, VARIANT1 - хозяева реже total, VARIANT2 - столько же.
-            final Variants hostDrawsAverageVSTotalHostDrawsAverageLevel05;
+            final Variants hostDrawsAverageVSTotalHostDrawsAverageLevel06;
             if (hostDrawsAverage > totalHostDrawsAverage + settings.deltaHostDraws) {
-                hostDrawsAverageVSTotalHostDrawsAverageLevel05 = Variants.VARIANT0;
+                hostDrawsAverageVSTotalHostDrawsAverageLevel06 = Variants.VARIANT0;
             } else if (hostDrawsAverage + settings.deltaHostDraws < totalHostDrawsAverage) {
-                hostDrawsAverageVSTotalHostDrawsAverageLevel05 = Variants.VARIANT1;
+                hostDrawsAverageVSTotalHostDrawsAverageLevel06 = Variants.VARIANT1;
             } else {
-                hostDrawsAverageVSTotalHostDrawsAverageLevel05 = Variants.VARIANT2;
+                hostDrawsAverageVSTotalHostDrawsAverageLevel06 = Variants.VARIANT2;
             }
             countLevels++;
 
             // Гости в среднем играют вничью против total гостей.
             // VARIANT1 - гости чаще total, VARIANT1 - гости реже total, VARIANT2 - столько же.
-            final Variants guestDrawsAverageVSTotalGuestDrawsAverageLevel06;
+            final Variants guestDrawsAverageVSTotalGuestDrawsAverageLevel07;
             if (guestDrawsAverage > totalGuestDrawsAverage + settings.deltaGuestDraws) {
-                guestDrawsAverageVSTotalGuestDrawsAverageLevel06 = Variants.VARIANT0;
+                guestDrawsAverageVSTotalGuestDrawsAverageLevel07 = Variants.VARIANT0;
             } else if (guestDrawsAverage + settings.deltaGuestDraws < totalGuestDrawsAverage) {
-                guestDrawsAverageVSTotalGuestDrawsAverageLevel06 = Variants.VARIANT1;
+                guestDrawsAverageVSTotalGuestDrawsAverageLevel07 = Variants.VARIANT1;
             } else {
-                guestDrawsAverageVSTotalGuestDrawsAverageLevel06 = Variants.VARIANT2;
-            }
-            countLevels++;
-
-            // Хозяева в среднем выигрывают против гости в среднем выигрывают.
-            // VARIANT1 - хозяева чаще, VARIANT1 - хозяева реже, VARIANT2 - столько же.
-            final Variants hostWinsAverageVSGuestWinsAverageLevel07;
-            if (hostWinsAverage > guestWinsAverage + settings.deltaWins) {
-                hostWinsAverageVSGuestWinsAverageLevel07 = Variants.VARIANT0;
-            } else if (hostWinsAverage + settings.deltaWins < guestWinsAverage) {
-                hostWinsAverageVSGuestWinsAverageLevel07 = Variants.VARIANT1;
-            } else {
-                hostWinsAverageVSGuestWinsAverageLevel07 = Variants.VARIANT2;
+                guestDrawsAverageVSTotalGuestDrawsAverageLevel07 = Variants.VARIANT2;
             }
             countLevels++;
 
@@ -437,7 +442,7 @@ public class KHLSolver05 {
             }
             level++;
 
-            switch (hostWinsAverageVSTotalHostWinsAverageLevel02) {
+            switch (hostWinsAverageVSGuestWinsAverageLevel02) {
                 case VARIANT0:
                     hostWinInPeriods += weights[level];
                     hostWinInOvertimeOrShootouts += weights[level];
@@ -449,59 +454,59 @@ public class KHLSolver05 {
                 case VARIANT2:
                     break;
                 default:
-                    Utils.impossibleIllegalState("hostWinsAverageVSTotalHostWinsAverageLevel02");
+                    Utils.impossibleIllegalState("hostWinsAverageVSGuestWinsAverageLevel02");
             }
             level++;
 
-            switch (guestWinsAverageVSTotalGuestWinsAverageLevel03) {
+            switch (hostWinsAverageVSTotalHostWinsAverageLevel03) {
                 case VARIANT0:
-                    guestWinInPeriods += weights[level];
-                    guestWinInOvertimeOrShootouts += weights[level];
-                    break;
-                case VARIANT1:
                     hostWinInPeriods += weights[level];
                     hostWinInOvertimeOrShootouts += weights[level];
+                    break;
+                case VARIANT1:
+                    guestWinInPeriods += weights[level];
+                    guestWinInOvertimeOrShootouts += weights[level];
                     break;
                 case VARIANT2:
                     break;
                 default:
-                    Utils.impossibleIllegalState("guestWinsAverageVSTotalGuestWinsAverageLevel03");
+                    Utils.impossibleIllegalState("hostWinsAverageVSTotalHostWinsAverageLevel03");
             }
             level++;
 
-            switch (hostScoreAverageFirstVSGuestScoreAverageSecondLevel04) {
+            switch (guestWinsAverageVSTotalGuestWinsAverageLevel04) {
                 case VARIANT0:
-                    hostWinInPeriods += weights[level];
-                    hostWinInOvertimeOrShootouts += weights[level];
-                    break;
-                case VARIANT1:
                     guestWinInPeriods += weights[level];
                     guestWinInOvertimeOrShootouts += weights[level];
+                    break;
+                case VARIANT1:
+                    hostWinInPeriods += weights[level];
+                    hostWinInOvertimeOrShootouts += weights[level];
                     break;
                 case VARIANT2:
                     break;
                 default:
-                    Utils.impossibleIllegalState("hostScoreAverageFirstVSGuestScoreAverageSecondLevel04");
+                    Utils.impossibleIllegalState("guestWinsAverageVSTotalGuestWinsAverageLevel04");
             }
             level++;
 
-            switch (hostDrawsAverageVSTotalHostDrawsAverageLevel05) {
+            switch (hostScoreAverageFirstVSGuestScoreAverageSecondLevel05) {
                 case VARIANT0:
+                    hostWinInPeriods += weights[level];
                     hostWinInOvertimeOrShootouts += weights[level];
-                    guestWinInOvertimeOrShootouts += weights[level];
                     break;
                 case VARIANT1:
-                    hostWinInPeriods += weights[level];
                     guestWinInPeriods += weights[level];
+                    guestWinInOvertimeOrShootouts += weights[level];
                     break;
                 case VARIANT2:
                     break;
                 default:
-                    Utils.impossibleIllegalState("hostDrawsAverageVSTotalHostDrawsAverageLevel05");
+                    Utils.impossibleIllegalState("hostScoreAverageFirstVSGuestScoreAverageSecondLevel05");
             }
             level++;
 
-            switch (guestDrawsAverageVSTotalGuestDrawsAverageLevel06) {
+            switch (hostDrawsAverageVSTotalHostDrawsAverageLevel06) {
                 case VARIANT0:
                     hostWinInOvertimeOrShootouts += weights[level];
                     guestWinInOvertimeOrShootouts += weights[level];
@@ -509,26 +514,26 @@ public class KHLSolver05 {
                 case VARIANT1:
                     hostWinInPeriods += weights[level];
                     guestWinInPeriods += weights[level];
+                    break;
                 case VARIANT2:
                     break;
                 default:
-                    Utils.impossibleIllegalState("guestDrawsAverageVSTotalGuestDrawsAverageLevel06");
+                    Utils.impossibleIllegalState("hostDrawsAverageVSTotalHostDrawsAverageLevel06");
             }
             level++;
 
-            switch (hostWinsAverageVSGuestWinsAverageLevel07) {
+            switch (guestDrawsAverageVSTotalGuestDrawsAverageLevel07) {
                 case VARIANT0:
-                    hostWinInPeriods += weights[level];
                     hostWinInOvertimeOrShootouts += weights[level];
-                    break;
-                case VARIANT1:
-                    guestWinInPeriods += weights[level];
                     guestWinInOvertimeOrShootouts += weights[level];
                     break;
+                case VARIANT1:
+                    hostWinInPeriods += weights[level];
+                    guestWinInPeriods += weights[level];
                 case VARIANT2:
                     break;
                 default:
-                    Utils.impossibleIllegalState("hostWinsAverageVSGuestWinsAverageLevel07");
+                    Utils.impossibleIllegalState("guestDrawsAverageVSTotalGuestDrawsAverageLevel07");
             }
             level++;
 
@@ -559,7 +564,7 @@ public class KHLSolver05 {
             } else if (hostWin < guestWin) {
                 isHostWin = false;
             } else {
-                isHostWin = hostWinsAverageVSGuestWinsAverageLevel07 != Variants.VARIANT1;
+                isHostWin = hostWinsAverageVSGuestWinsAverageLevel02 != Variants.VARIANT1;
                 draw += weights[level];
             }
             level++;
@@ -572,8 +577,8 @@ public class KHLSolver05 {
             } else if (winInPeriods < draw) {
                 isDraw = true;
             } else {
-                isDraw = hostDrawsAverageVSTotalHostDrawsAverageLevel05 == Variants.VARIANT0
-                        && guestDrawsAverageVSTotalGuestDrawsAverageLevel06 == Variants.VARIANT0;
+                isDraw = hostDrawsAverageVSTotalHostDrawsAverageLevel06 == Variants.VARIANT0
+                        && guestDrawsAverageVSTotalGuestDrawsAverageLevel07 == Variants.VARIANT0;
             }
 
             final int avg = (first + second) / 2;

@@ -25,4 +25,8 @@ public class KHLMetric {
                 ", percentDrawsByDraws=" + rightDraws * 100 / countDraws +
                 '}';
     }
+
+    public double getResult() {
+        return right / (double) count;
+    }
 }
