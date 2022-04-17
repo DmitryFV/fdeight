@@ -108,7 +108,7 @@ public class KHLProcessor {
     private static void compare05(final KHLStorage khlStorage, final int startYear, final int endYear,
                                   final double[] weights05, final int level, final Result05 best) {
         if (level < 4) {
-            // Оптимизация расчетов, первые 3 веса всегда в максимуме.
+            // Оптимизация расчетов, первые несколько весов всегда в максимуме.
             weights05[level] = MAX_WEIGHT;
             compare05(khlStorage, startYear, endYear, weights05, level + 1, best);
             return;
