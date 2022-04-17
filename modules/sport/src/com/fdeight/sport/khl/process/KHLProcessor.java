@@ -5,6 +5,7 @@ import com.fdeight.sport.khl.parsers.KHLRBParser;
 import com.fdeight.sport.khl.data.KHLStorage;
 import com.fdeight.sport.khl.solvers.KHLSolver02;
 import com.fdeight.sport.khl.solvers.KHLSolver03;
+import com.fdeight.sport.khl.solvers.KHLSolver04;
 import com.fdeight.sport.parsers.TxtParser;
 
 import java.io.File;
@@ -24,15 +25,16 @@ public class KHLProcessor {
         //final File file = new File("2016-2017_txt_rb_v03");
         parser.parse(file);
         khlStorage.sort();
+        final int year = 2014;
         System.out.println(String.format("Storage size = %d", khlStorage.size()));
-        final Date min = new GregorianCalendar(2018, Calendar.AUGUST, 1).getTime();
-        final Date max = new GregorianCalendar(2018, Calendar.NOVEMBER, 30).getTime();
+        final Date min = new GregorianCalendar(year, Calendar.AUGUST, 1).getTime();
+        final Date max = new GregorianCalendar(year, Calendar.NOVEMBER, 30).getTime();
 //        final Date min = new GregorianCalendar(2016, Calendar.OCTOBER, 1).getTime();
 //        final Date max = new GregorianCalendar(2016, Calendar.OCTOBER, 1).getTime();
         final KHLStorage subStorage = khlStorage.getSubStorageFiltredByDate(min, max);
         System.out.println(String.format("Sub storage size = %d", subStorage.size()));
-        final Date queryMin = new GregorianCalendar(2018, Calendar.DECEMBER, 1).getTime();
-        final Date queryMax = new GregorianCalendar(2018, Calendar.DECEMBER, 10).getTime();
+        final Date queryMin = new GregorianCalendar(year, Calendar.DECEMBER, 1).getTime();
+        final Date queryMax = new GregorianCalendar(year, Calendar.DECEMBER, 10).getTime();
         final KHLStorage queryStorage = khlStorage.getQueryStorageFiltredByDate(queryMin, queryMax);
         System.out.println(String.format("Query storage size = %d", queryStorage.size()));
 
@@ -51,7 +53,14 @@ public class KHLProcessor {
         System.out.println(String.format("Result 03: %s", resultList03));
         System.out.println(String.format("Test: %s", testStorage));
         System.out.println(String.format("Metric 03: %s", testStorage.compare(resultList03)));
-        
+
+        final KHLSolver04 solver04 = new KHLSolver04(100, subStorage, queryStorage);
+        solver04.solve();
+        final List<KHLMatchInfo> resultList04 = solver04.getResultList();
+        System.out.println(String.format("Result 04: %s", resultList04));
+        System.out.println(String.format("Test: %s", testStorage));
+        System.out.println(String.format("Metric 04: %s", testStorage.compare(resultList04)));
+
         System.out.println(String.format("Done %s", KHLProcessor.class.getSimpleName()));
     }
 }
