@@ -20,9 +20,9 @@ public class KHLMetric {
                 ", countDraws=" + countDraws +
                 ", right=" + right +
                 ", rightDraws=" + rightDraws +
-                ", percentRight=[" + right * 100 / count + "]" +
-                ", percentDrawsByCount=" + rightDraws * 100 / count +
-                ", percentDrawsByDraws=" + rightDraws * 100 / countDraws +
+                ", percentRight=[" + (count == 0 ? "UNDEFINED" : "" + (right * 100 / count)) + "]" +
+                ", percentDrawsByCount=" + (count == 0 ? "UNDEFINED" : "" + (rightDraws * 100 / count)) +
+                ", percentDrawsByDraws=" + (countDraws == 0 ? "UNDEFINED" : "" + (rightDraws * 100 / countDraws)) +
                 '}';
     }
 
