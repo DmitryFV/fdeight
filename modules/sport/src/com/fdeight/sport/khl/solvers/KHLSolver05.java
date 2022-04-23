@@ -203,7 +203,7 @@ public class KHLSolver05 {
         final long startTime = System.currentTimeMillis();
         System.out.println(String.format("Start solve weights %s", KHLSolver05.class.getSimpleName()));
         // Если до конца считать долго (new double[COUNT_LEVELS]), то используем значение меньше длины.
-        final double[] weights = new double[COUNT_LEVELS];
+        final double[] weights = new double[COUNT_LEVELS - 2];
         final ResultWeights best = new ResultWeights();
         compare(khlStorage, startYear, endYear, weights, 0, best);
         System.out.println(String.format(Locale.US, "Done solve: %s, %5.3f",
