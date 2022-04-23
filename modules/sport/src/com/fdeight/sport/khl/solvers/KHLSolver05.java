@@ -1,13 +1,11 @@
 package com.fdeight.sport.khl.solvers;
 
 import com.fdeight.sport.khl.data.KHLMatchInfo;
+import com.fdeight.sport.khl.data.KHLMetric;
 import com.fdeight.sport.khl.data.KHLStorage;
 import com.fdeight.sport.utils.Utils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 
 import static com.fdeight.sport.khl.data.KHLMatchInfo.NIL_NIL;
 
@@ -188,6 +186,85 @@ public class KHLSolver05 {
             }
         }
     }
+
+    //- Блок расчетов весов --------------------------------------------------------------------------------------------
+
+    private static final double MIN_WEIGHT = 0;
+    private static final double MAX_WEIGHT = 1;
+    private static final double STEP_WEIGHT = 0.5;
+    private static final int COUNT_LEVELS = 10;
+
+    private static class ResultWeights {
+        private double[] weights;
+        private double result;
+    }
+
+    public static double[] computeWeights(final KHLStorage khlStorage, final int startYear, final int endYear) {
+        final long startTime = System.currentTimeMillis();
+        System.out.println(String.format("Start solve weights %s", KHLSolver05.class.getSimpleName()));
+        // Если до конца считать долго (new double[COUNT_LEVELS]), то используем значение меньше длины.
+        final double[] weights = new double[COUNT_LEVELS];
+        final ResultWeights best = new ResultWeights();
+        compare(khlStorage, startYear, endYear, weights, 0, best);
+        System.out.println(String.format(Locale.US, "Done solve: %s, %5.3f",
+                Arrays.toString(best.weights), best.result));
+        System.out.println(String.format("Time solve weights: %d ms", System.currentTimeMillis() - startTime));
+        return createWeightsFull(best.weights);
+    }
+
+    private static void compare(final KHLStorage khlStorage, final int startYear, final int endYear,
+                                final double[] weights, final int level, final ResultWeights best) {
+        if (level < 4) {
+            // Оптимизация расчетов, первые несколько весов всегда в максимуме.
+            weights[level] = MAX_WEIGHT;
+            compare(khlStorage, startYear, endYear, weights, level + 1, best);
+            return;
+        }
+        if (level < weights.length) {
+            double weight = MIN_WEIGHT;
+            while (weight <= MAX_WEIGHT + 1e-9) {
+                weights[level] = weight;
+                compare(khlStorage, startYear, endYear, weights, level + 1, best);
+                weight += STEP_WEIGHT;
+            }
+            return;
+        }
+        double result = 0;
+        for (int year = startYear; year <= endYear; year++) {
+            final Date min = new GregorianCalendar(year, Calendar.AUGUST, 1).getTime();
+            final Date max = new GregorianCalendar(year, Calendar.NOVEMBER, 30).getTime();
+            final KHLStorage subStorage = khlStorage.getSubStorageFiltredByDate(min, max);
+            final Date queryMin = new GregorianCalendar(year, Calendar.DECEMBER, 1).getTime();
+            final Date queryMax = new GregorianCalendar(year, Calendar.DECEMBER, 10).getTime();
+            final KHLStorage queryStorage = khlStorage.getQueryStorageFiltredByDate(queryMin, queryMax);
+
+            final KHLStorage testStorage = khlStorage.getSubStorageFiltredByStorage(queryStorage);
+
+            final KHLSolver05 solver = new KHLSolver05(subStorage, queryStorage, createWeightsFull(weights));
+            solver.solve();
+            final List<KHLMatchInfo> resultList = solver.getResultList();
+            final KHLMetric metric = testStorage.compare(resultList);
+            result += metric.getResult();
+        }
+        result /= (endYear - startYear + 1);
+        if (best.result < result) {
+            best.result = result;
+            best.weights = weights.clone();
+        }
+    }
+
+    private static double[] createWeightsFull(final double[] weights) {
+        if (weights.length == COUNT_LEVELS) {
+            return weights;
+        }
+        final double[] weightsFull = new double[COUNT_LEVELS];
+        Arrays.fill(weightsFull, 0);
+        System.arraycopy(weights, 0, weightsFull, 0, weights.length);
+        return weightsFull;
+    }
+
+
+    //------------------------------------------------------------------------------------------------------------------
 
     public void solve() {
         computeTeamStats();
