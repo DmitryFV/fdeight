@@ -9,6 +9,11 @@ public class Utils {
         throw new IllegalStateException(String.format("%s: %d != %d", labelSupplier.get(), value1, value2));
     }
 
+    public static void checkEquals(final double value1, final double value2, final Supplier<String> labelSupplier) {
+        if (Math.abs(value1 - value2) < 1e-12) return;
+        throw new IllegalStateException(String.format("%s: %5.3f != %5.3f", labelSupplier.get(), value1, value2));
+    }
+
     public static void checkEquals(final String value1, final String value2, final Supplier<String> labelSupplier) {
         if (Objects.requireNonNull(value1, labelSupplier.get()).equals(value2)) return;
         throw new IllegalStateException(String.format("%s: %s != %s", labelSupplier.get(), value1, value2));
@@ -22,6 +27,11 @@ public class Utils {
     public static void checkNotNegative(final int value, final Supplier<String> labelSupplier) {
         if (value >= 0) return;
         throw new IllegalStateException(String.format("%s: %d < 0", labelSupplier.get(), value));
+    }
+
+    public static void checkNotNegative(final double value, final Supplier<String> labelSupplier) {
+        if (value >= 0) return;
+        throw new IllegalStateException(String.format("%s: %5.3f < 0", labelSupplier.get(), value));
     }
 
     public static void checkInterval(final int value, final int min, final int max,

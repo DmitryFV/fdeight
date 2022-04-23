@@ -3,10 +3,7 @@ package com.fdeight.sport.khl.process;
 import com.fdeight.sport.khl.data.KHLMatchInfo;
 import com.fdeight.sport.khl.parsers.KHLRBParser;
 import com.fdeight.sport.khl.data.KHLStorage;
-import com.fdeight.sport.khl.solvers.KHLSolver02;
-import com.fdeight.sport.khl.solvers.KHLSolver03;
-import com.fdeight.sport.khl.solvers.KHLSolver04;
-import com.fdeight.sport.khl.solvers.KHLSolver05;
+import com.fdeight.sport.khl.solvers.*;
 import com.fdeight.sport.parsers.TxtParser;
 
 import java.io.File;
@@ -69,6 +66,13 @@ public class KHLProcessor {
             System.out.println(String.format("Result 05: %s", resultList05w));
             System.out.println(String.format("Test: %s", testStorage));
             System.out.println(String.format("Metric 05: %s", testStorage.compare(resultList05w)));
+
+            final KHLSolver06 solver06 = new KHLSolver06(subStorage, queryStorage);
+            solver06.solve();
+            final List<KHLMatchInfo> resultList06 = solver06.getResultList();
+            System.out.println(String.format("Result 06: %s", resultList06));
+            System.out.println(String.format("Test: %s", testStorage));
+            System.out.println(String.format("Metric 06: %s", testStorage.compare(resultList06)));
         }
         System.out.println(String.format("Done %s", KHLProcessor.class.getSimpleName()));
     }
