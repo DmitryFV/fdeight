@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
+@SuppressWarnings("unused")
 public class KHLSolver01 {
     private static final String TOTAL = "Total";
 
@@ -125,7 +126,7 @@ public class KHLSolver01 {
     }
 
     /**
-     * Хранилище информации о матчах, которые являются начальными даннными, по которым собираем статистику, обучаемся.
+     * Хранилище информации о матчах, которые являются начальными даннными, по ним собираем статистику, обучаемся.
      */
     private final KHLStorage initStorage;
     /**
