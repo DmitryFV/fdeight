@@ -133,9 +133,9 @@ public class KHLSolver06 implements KHLSolver {
         final List<KHLMatchInfo> queryList = queryStorage.getUnmodifiableList();
         for (final KHLMatchInfo queryInfo : queryList) {
             final PowerRankings hostPowerRankings = Objects.requireNonNull(teamPowerRankings.get(queryInfo.firstTeam),
-                    "hostStats undefined");
+                    "hostPowerRankings undefined");
             final PowerRankings guestPowerRankings = Objects.requireNonNull(teamPowerRankings.get(queryInfo.secondTeam),
-                    "guestStats undefined");
+                    "guestPowerRankings undefined");
 
             final boolean isHostWin;
             final boolean isDraw;
