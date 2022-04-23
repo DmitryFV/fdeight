@@ -92,16 +92,48 @@ public class KHLStorage {
     }
 
     public KHLMetric compare(final List<KHLMatchInfo> list) {
-        Utils.checkEquals(storage.size(), list.size(), () -> "size");
+        return compare(list, true);
+    }
+
+    /**
+     * Порядок элементов в хранилище и в списке, который надо проверить, должны совпадать.
+     * Если размер хранилища и списка, который надо проверить, не равны, то список является подмножеством хранилища.
+     * Если размеры хранилища и списка, который надо проверить, не обязаны быть равными, то они могут быть равными,
+     * могут быть не равными.
+     *
+     * @param list                 список, который надо проверить.
+     * @param isExpectedSizeEquals обязаны ли быть равными размеры хранилища и списка, который надо проверить.
+     * @return метрики.
+     */
+    public KHLMetric compare(final List<KHLMatchInfo> list, final boolean isExpectedSizeEquals) {
+        if (isExpectedSizeEquals) {
+            Utils.checkEquals(storage.size(), list.size(), () -> "size");
+        }
+        int count = 0;
         int countDraws = 0;
         int right = 0;
         int rightDraws = 0;
         for (int i = 0; i < storage.size(); i++) {
             final KHLMatchInfo info = storage.get(i);
-            final KHLMatchInfo otherInfo = list.get(i);
-            Utils.checkEquals(info.date.getTime(), otherInfo.date.getTime(), () -> "date");
-            Utils.checkEquals(info.firstTeam, otherInfo.firstTeam, () -> "firstTeam");
-            Utils.checkEquals(info.secondTeam, otherInfo.secondTeam, () -> "secondTeam");
+            final KHLMatchInfo otherInfo;
+            if (isExpectedSizeEquals) {
+                otherInfo = list.get(i);
+                Utils.checkEquals(info.date.getTime(), otherInfo.date.getTime(), () -> "date");
+                Utils.checkEquals(info.firstTeam, otherInfo.firstTeam, () -> "firstTeam");
+                Utils.checkEquals(info.secondTeam, otherInfo.secondTeam, () -> "secondTeam");
+            } else {
+                KHLMatchInfo lOtherInfo = null;
+                for (final KHLMatchInfo listInfo : list) {
+                    if (info.date.getTime() != listInfo.date.getTime()) continue;
+                    if (!info.firstTeam.equals(listInfo.firstTeam)) continue;
+                    if (!info.secondTeam.equals(listInfo.secondTeam)) continue;
+                    lOtherInfo = listInfo;
+                    break;
+                }
+                if (lOtherInfo == null) continue;
+                otherInfo = lOtherInfo;
+            }
+            count++;
             if (info.scorePeriods.size() == KHLMatchInfo.PLAIN_PERIODS_COUNT) {
                 final int signum = Integer.signum(info.score.first - info.score.second);
                 Utils.checkNotEquals(signum, 0, () -> "signum");
@@ -117,6 +149,7 @@ public class KHLStorage {
                 }
             }
         }
-        return new KHLMetric(storage.size(), countDraws, right, rightDraws);
+        Utils.checkEquals(count, list.size(), () -> "count vs list.size()");
+        return new KHLMetric(count, countDraws, right, rightDraws);
     }
 }

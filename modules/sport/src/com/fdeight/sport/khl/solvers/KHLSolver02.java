@@ -8,7 +8,7 @@ import java.util.*;
 
 import static com.fdeight.sport.khl.data.KHLMatchInfo.NIL_NIL;
 
-public class KHLSolver02 {
+public class KHLSolver02 implements KHLSolver {
     private static final String TOTAL = "Total";
 
     private static class StatScore {
@@ -608,6 +608,7 @@ public class KHLSolver02 {
         }
     }
 
+    @Override
     public List<KHLMatchInfo> getResultList() {
         checkBeforeGetResult();
         return resultStorage.getUnmodifiableList();

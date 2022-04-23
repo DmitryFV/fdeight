@@ -17,7 +17,7 @@ import static com.fdeight.sport.khl.data.KHLMatchInfo.NIL_NIL;
  * принудительно выставляются в максимальный вес (эксперименты показали, что эти уровни все равно так в итоге
  * и выставляются).
  */
-public class KHLSolver05 {
+public class KHLSolver05 implements KHLSolver {
     private static final String TOTAL = "Total";
 
     private static class StatScore {
@@ -728,6 +728,7 @@ public class KHLSolver05 {
         }
     }
 
+    @Override
     public List<KHLMatchInfo> getResultList() {
         checkBeforeGetResult();
         return resultStorage.getUnmodifiableList();

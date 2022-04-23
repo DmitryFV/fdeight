@@ -18,7 +18,7 @@ import static com.fdeight.sport.khl.data.KHLMatchInfo.NIL_NIL;
  * Таким образом Индекс силы показывает, какие команды в настоящий момент находятся «на ходу»,
  * обыгрывают фаворитов и выдают длительные победные серии."
  */
-public class KHLSolver06 {
+public class KHLSolver06 implements KHLSolver {
     /**
      * Начальное значение баллов, которое имеет каждая команда. Конкретная величина большого значения не имеет,
      * потому что все команды в равных условиях.
@@ -207,6 +207,7 @@ public class KHLSolver06 {
         Utils.checkEquals(sum, teamPowerRankings.size() * START_VALUE, () -> "Sum of power rankings");
     }
 
+    @Override
     public List<KHLMatchInfo> getResultList() {
         checkBeforeGetResult();
         return resultStorage.getUnmodifiableList();
