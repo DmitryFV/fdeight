@@ -20,7 +20,7 @@ public class KHLMetric {
                 ", countDraws=" + countDraws +
                 ", right=" + right +
                 ", rightDraws=" + rightDraws +
-                ", percentRight=" + right * 100 / count +
+                ", percentRight=[" + right * 100 / count + "]" +
                 ", percentDrawsByCount=" + rightDraws * 100 / count +
                 ", percentDrawsByDraws=" + rightDraws * 100 / countDraws +
                 '}';
