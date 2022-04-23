@@ -70,6 +70,12 @@ public class KHLProcessor {
             System.out.println(String.format("Result 06: %s", resultList06));
             System.out.println(String.format("Metric 06: %s", testStorage.compare(resultList06)));
 
+            final KHLSolver08 solver08 = new KHLSolver08(subStorage, queryStorage);
+            solver08.solve();
+            final List<KHLMatchInfo> resultList08 = solver08.getResultList();
+            System.out.println(String.format("Result 08: %s", resultList08));
+            System.out.println(String.format("Metric 08: %s", testStorage.compare(resultList08)));
+            
             final List<KHLSolver> khlSolvers = new ArrayList<>();
             khlSolvers.add(solver05);
             khlSolvers.add(solver06);
@@ -84,6 +90,15 @@ public class KHLProcessor {
             final List<KHLMatchInfo> resultList07s3 = solver07s3.getResultList();
             System.out.println(String.format("Result 07s3(05,06,02): %s", resultList07s3));
             System.out.println(String.format("Metric 07s3(05,06,02): %s", testStorage.compare(resultList07s3, false)));
+
+            final List<KHLSolver> khlSolvers0508 = new ArrayList<>();
+            khlSolvers0508.add(solver05);
+            khlSolvers0508.add(solver08);
+            final KHLSolver07 solver07s0508 = new KHLSolver07(queryStorage, khlSolvers0508);
+            solver07s0508.solve();
+            final List<KHLMatchInfo> resultList07s0508 = solver07s0508.getResultList();
+            System.out.println(String.format("Result 07s(05,08): %s", resultList07s0508));
+            System.out.println(String.format("Metric 07s(05,08): %s", testStorage.compare(resultList07s0508, false)));
         }
         System.out.println(String.format("Done %s", KHLProcessor.class.getSimpleName()));
     }
