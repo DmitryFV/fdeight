@@ -43,37 +43,37 @@ public class KHLProcessor {
             final KHLSolver02 solver02 = new KHLSolver02(subStorage, queryStorage);
             solver02.solve();
             final List<KHLMatchInfo> resultList02 = solver02.getResultList();
-            System.out.println(String.format("Result 02: %s", resultList02));
+            //System.out.println(String.format("Result 02: %s", resultList02));
             System.out.println(String.format("Metric 02: %s", testStorage.compare(resultList02)));
 
             final KHLSolver03 solver03 = new KHLSolver03(108, queryStorage);
             solver03.solve();
             final List<KHLMatchInfo> resultList03 = solver03.getResultList();
-            System.out.println(String.format("Result 03: %s", resultList03));
+            //System.out.println(String.format("Result 03: %s", resultList03));
             System.out.println(String.format("Metric 03: %s", testStorage.compare(resultList03)));
 
             final KHLSolver04 solver04 = new KHLSolver04(100, subStorage, queryStorage);
             solver04.solve();
             final List<KHLMatchInfo> resultList04 = solver04.getResultList();
-            System.out.println(String.format("Result 04: %s", resultList04));
+            //System.out.println(String.format("Result 04: %s", resultList04));
             System.out.println(String.format("Metric 04: %s", testStorage.compare(resultList04)));
 
             final KHLSolver05 solver05 = new KHLSolver05(subStorage, queryStorage, weights05Full);
             solver05.solve();
             final List<KHLMatchInfo> resultList05w = solver05.getResultList();
-            System.out.println(String.format("Result 05: %s", resultList05w));
+            //System.out.println(String.format("Result 05: %s", resultList05w));
             System.out.println(String.format("Metric 05: %s", testStorage.compare(resultList05w)));
 
             final KHLSolver06 solver06 = new KHLSolver06(subStorage, queryStorage);
             solver06.solve();
             final List<KHLMatchInfo> resultList06 = solver06.getResultList();
-            System.out.println(String.format("Result 06: %s", resultList06));
+            //System.out.println(String.format("Result 06: %s", resultList06));
             System.out.println(String.format("Metric 06: %s", testStorage.compare(resultList06)));
 
             final KHLSolver08 solver08 = new KHLSolver08(subStorage, queryStorage);
             solver08.solve();
             final List<KHLMatchInfo> resultList08 = solver08.getResultList();
-            System.out.println(String.format("Result 08: %s", resultList08));
+            //System.out.println(String.format("Result 08: %s", resultList08));
             System.out.println(String.format("Metric 08: %s", testStorage.compare(resultList08)));
             
             final List<KHLSolver> khlSolvers = new ArrayList<>();
@@ -82,13 +82,13 @@ public class KHLProcessor {
             final KHLSolver07 solver07s2 = new KHLSolver07(queryStorage, khlSolvers);
             solver07s2.solve();
             final List<KHLMatchInfo> resultList07s2 = solver07s2.getResultList();
-            System.out.println(String.format("Result 07s2(05,06): %s", resultList07s2));
+            //System.out.println(String.format("Result 07s2(05,06): %s", resultList07s2));
             System.out.println(String.format("Metric 07s2(05,06): %s", testStorage.compare(resultList07s2, false)));
             khlSolvers.add(solver02);
             final KHLSolver07 solver07s3 = new KHLSolver07(queryStorage, khlSolvers);
             solver07s3.solve();
             final List<KHLMatchInfo> resultList07s3 = solver07s3.getResultList();
-            System.out.println(String.format("Result 07s3(05,06,02): %s", resultList07s3));
+            //System.out.println(String.format("Result 07s3(05,06,02): %s", resultList07s3));
             System.out.println(String.format("Metric 07s3(05,06,02): %s", testStorage.compare(resultList07s3, false)));
 
             final List<KHLSolver> khlSolvers0508 = new ArrayList<>();
@@ -97,7 +97,7 @@ public class KHLProcessor {
             final KHLSolver07 solver07s0508 = new KHLSolver07(queryStorage, khlSolvers0508);
             solver07s0508.solve();
             final List<KHLMatchInfo> resultList07s0508 = solver07s0508.getResultList();
-            System.out.println(String.format("Result 07s(05,08): %s", resultList07s0508));
+            //System.out.println(String.format("Result 07s(05,08): %s", resultList07s0508));
             System.out.println(String.format("Metric 07s(05,08): %s", testStorage.compare(resultList07s0508, false)));
         }
         System.out.println(String.format("Done %s", KHLProcessor.class.getSimpleName()));
