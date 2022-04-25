@@ -47,13 +47,13 @@ public class KHLSolver08 implements KHLSolver {
         public final double shareDraw = 0.1;
         /**
          * Коэффициент, определяющий минимальную разность между средним значением индекса ничьей
-         * по двум играющим командам и средним значением индекса ничьей по всем играющи командам,
+         * по двум играющим командам и средним значением индекса ничьей по всем играющим командам,
          * при которой считаем, что будет ничья.
          * Если разница меньше - это победа в основное время.
          * Минимальная разница равна произведению данного коэффициента на среднее значение индекса ничьей
          * по всем командам.
          */
-        public final double deltaAvgDrawCoef = 0.2;
+        public final double deltaAvgDrawCoef = 0.45;
     }
 
     /**
@@ -162,7 +162,7 @@ public class KHLSolver08 implements KHLSolver {
             final boolean isHostWin = hostPowerRankings.winValue >= guestPowerRankings.winValue;
 
             final boolean isDraw = (hostPowerRankings.drawValue + guestPowerRankings.drawValue) / 2
-                    > avgDrawValue + settings.deltaAvgDrawCoef;
+                    > avgDrawValue + settings.deltaAvgDrawCoef * avgDrawValue;
 
             final int first = rnd.nextInt(4);
             final int second = rnd.nextInt(4);
