@@ -111,6 +111,7 @@ public class KHLStorage {
         }
         int count = 0;
         int countDraws = 0;
+        int countHostWinWithoutOvertime = 0;
         int right = 0;
         int rightDraws = 0;
         for (int i = 0; i < storage.size(); i++) {
@@ -135,6 +136,9 @@ public class KHLStorage {
             }
             count++;
             if (info.scorePeriods.size() == KHLMatchInfo.PLAIN_PERIODS_COUNT) {
+                if (info.score.first - info.score.second > 0) {
+                    countHostWinWithoutOvertime++;
+                }
                 final int signum = Integer.signum(info.score.first - info.score.second);
                 Utils.checkNotEquals(signum, 0, () -> "signum");
                 if (otherInfo.scorePeriods.size() == KHLMatchInfo.PLAIN_PERIODS_COUNT
@@ -150,6 +154,6 @@ public class KHLStorage {
             }
         }
         Utils.checkEquals(count, list.size(), () -> "count vs list.size()");
-        return new KHLMetric(count, countDraws, right, rightDraws);
+        return new KHLMetric(count, countDraws, countHostWinWithoutOvertime, right, rightDraws);
     }
 }
