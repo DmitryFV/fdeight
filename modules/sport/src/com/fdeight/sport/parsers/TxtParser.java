@@ -29,7 +29,7 @@ public abstract class TxtParser {
             String line;
             int lineNumber = 0;
             while ((line = reader.readLine()) != null) {
-                processLine(lineNumber++, line);
+                processLine(lineNumber++, line.trim());
             }
         }
     }
