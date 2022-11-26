@@ -51,13 +51,6 @@ public class KHLSolver07 {
                     resultInfo = solverInfo;
                     continue;
                 }
-                final boolean isDrawResult = resultInfo.scorePeriods.size() == KHLMatchInfo.PLAIN_PERIODS_COUNT;
-                final boolean isDrawSolver = solverInfo.scorePeriods.size() == KHLMatchInfo.PLAIN_PERIODS_COUNT;
-                if (isDrawResult != isDrawSolver) {
-                   resultInfo = null;
-                   break;
-                }
-                if (isDrawResult) continue;
                 final boolean isHostWinResult = resultInfo.score.first > resultInfo.score.second;
                 final boolean isHostWinSolver = solverInfo.score.first > solverInfo.score.second;
                 if (isHostWinResult != isHostWinSolver) {
